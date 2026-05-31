@@ -1,7 +1,22 @@
 import { Users, CheckCircle, TrendingUp, Clock, AlertTriangle, Search, Filter, Eye, Edit, Trash2, Plus } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useEffect, useState } from "react";
 
 export function StudentsManagementView() {
+  const [alumnos, setAlumnos] = useState([]);
+  useEffect(() => {
+
+  fetch("http://127.0.0.1/tutores-api/obtener_alumnos.php")
+    .then((response) => response.json())
+    .then((data) => {
+
+      console.log(data);
+
+      setAlumnos(data);
+
+    });
+
+}, []);
   const riskData = [
     { id: '1', name: 'Sin riesgo', value: 203, color: '#3b82f6' },
     { id: '2', name: 'Riesgo bajo', value: 187, color: '#22c55e' },
@@ -18,58 +33,7 @@ export function StudentsManagementView() {
     { semestre: '6to', estudiantes: 31 }
   ];
 
-  const students = [
-    {
-      id: 1,
-      name: 'Ana Laura Gómez',
-      matricula: '2021-0456',
-      career: 'Ingeniería en Software',
-      semester: '4to',
-      average: 7.8,
-      tutor: 'Mtro. Javier López',
-      status: 'Riesgo medio'
-    },
-    {
-      id: 2,
-      name: 'Carlos Méndez Ruiz',
-      matricula: '2020-0892',
-      career: 'Ingeniería Industrial',
-      semester: '5to',
-      average: 8.5,
-      tutor: 'Mtra. Elena Torres',
-      status: 'Sin riesgo'
-    },
-    {
-      id: 3,
-      name: 'María Fernández López',
-      matricula: '2021-0234',
-      career: 'Arquitectura',
-      semester: '3er',
-      average: 8.7,
-      tutor: 'Mtro. Carlos Ramírez',
-      status: 'Sin riesgo'
-    },
-    {
-      id: 4,
-      name: 'Roberto Silva García',
-      matricula: '2019-0567',
-      career: 'Diseño Gráfico',
-      semester: '6to',
-      average: 9.2,
-      tutor: 'Mtra. Ana Martínez',
-      status: 'Sin riesgo'
-    },
-    {
-      id: 5,
-      name: 'Pedro Sánchez Ruiz',
-      matricula: '2021-0789',
-      career: 'Ingeniería Civil',
-      semester: '4to',
-      average: 7.2,
-      tutor: 'Mtro. Luis Fernández',
-      status: 'Riesgo alto'
-    }
-  ];
+
 
   const atRiskStudents = [
     { name: 'Pedro Sánchez Ruiz', reason: 'Promedio bajo (7.2)', level: 'Alto' },
@@ -274,38 +238,32 @@ export function StudentsManagementView() {
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estudiante</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Matrícula</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Carrera</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Semestre</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Promedio</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Tutor</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estado</th>
+                // <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Semestre</th>
+                //<th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Promedio</th>
+                //<th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Tutor</th>
+                //<th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estado</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
-                <tr key={student.id} className="border-b border-gray-100 hover:bg-gray-50">
+              {alumnos.map((alumno: any) => (
+                <tr key={alumno.nombre} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
-                        {student.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        {alumno.nombre
+                        .split(' ')
+                        .map((n: string) => n[0])
+                        .join('')
+                        .slice(0, 2)}
                       </div>
-                      <span className="font-medium text-sm">{student.name}</span>
+                      <span className="font-medium text-sm">{alumno.nombre}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-sm text-gray-600">{student.matricula}</td>
-                  <td className="py-4 px-6 text-sm text-gray-700">{student.career}</td>
-                  <td className="py-4 px-6 text-sm font-medium">{student.semester}</td>
-                  <td className="py-4 px-6">
-                    <span className={`font-semibold ${getAverageColor(student.average)}`}>
-                      {student.average.toFixed(1)}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-sm text-gray-700">{student.tutor}</td>
-                  <td className="py-4 px-6">
-                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(student.status)}`}>
-                      {student.status}
-                    </span>
-                  </td>
+                  <td className="py-4 px-6 text-sm text-gray-600">{alumno.matricula}</td>
+                  <td className="py-4 px-6 text-sm text-gray-700">{alumno.carrera}</td>
+                  
+
                   <td className="py-4 px-6">
                     <div className="flex gap-2">
                       <button className="p-1 hover:bg-gray-100 rounded">

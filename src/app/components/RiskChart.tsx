@@ -1,12 +1,32 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
-export function RiskChart() {
+export function RiskChart({ dashboard }: any) {
   const data = [
-    { id: 'alto', name: 'Riesgo alto', value: 38, color: '#ef4444' },
-    { id: 'medio', name: 'Riesgo medio', value: 95, color: '#f59e0b' },
-    { id: 'bajo', name: 'Riesgo bajo', value: 187, color: '#22c55e' },
-    { id: 'sin', name: 'Sin riesgo', value: 203, color: '#3b82f6' }
-  ];
+  {
+    id: 'alto',
+    name: 'Riesgo alto',
+    value: dashboard?.riesgoAlto || 0,
+    color: '#ef4444'
+  },
+  {
+    id: 'medio',
+    name: 'Riesgo medio',
+    value: dashboard?.riesgoMedio || 0,
+    color: '#f59e0b'
+  },
+  {
+    id: 'bajo',
+    name: 'Riesgo bajo',
+    value: dashboard?.riesgoBajo || 0,
+    color: '#22c55e'
+  },
+  {
+    id: 'sin',
+    name: 'Sin riesgo',
+    value: dashboard?.sinRiesgo || 0,
+    color: '#3b82f6'
+  }
+];
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">

@@ -3,7 +3,7 @@ import { Search, Download, Mail } from 'lucide-react';
 export function ReportGenerator() {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h3 className="font-semibold mb-6">1. Selecciona los filtros del reporte</h3>
+      <h3 className="font-semibold mb-6">   Selecciona los filtros del reporte</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
@@ -68,7 +68,7 @@ export function ReportGenerator() {
       </div>
 
       <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium">
-        Generar reporte
+        Buscar reporte
       </button>
     </div>
   );

@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { StatCard } from './components/StatCard';
-import { QuickActions } from './components/QuickActions';
-import { RecentAlerts } from './components/RecentAlerts';
+
 import { RiskChart } from './components/RiskChart';
 import { TutorshipChart } from './components/TutorshipChart';
 import { ReportsView } from './components/ReportsView';
@@ -33,6 +32,20 @@ export default function App() {
   );
 
   const [activeSection, setActiveSection] = useState('inicio');
+  const [dashboard, setDashboard] = useState<any>(null);
+  useEffect(() => {
+
+  fetch("http://127.0.0.1/tutores-api/dashboard_coordinadora.php")
+    .then((response) => response.json())
+    .then((data) => {
+
+      console.log(data);
+
+      setDashboard(data);
+
+    });
+
+}, []);
   if (!logueado) {
     return <Login />;
   }
@@ -103,52 +116,48 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard
                   title="Total estudiantes"
-                  value={523}
+                  value={dashboard?.totalEstudiantes || 0}
                   icon={Users}
                   bgColor="bg-blue-50"
                   iconColor="text-blue-600"
                 />
                 <StatCard
                   title="Tutores activos"
-                  value={128}
+                  value={dashboard?.tutoresActivos || 0}
                   icon={UserCheck}
                   bgColor="bg-green-50"
                   iconColor="text-green-600"
                 />
                 <StatCard
                   title="Reportes realizados"
-                  value={96}
+                  value={dashboard?.reportes || 0}
                   icon={FileText}
                   bgColor="bg-orange-50"
                   iconColor="text-orange-600"
                 />
                 <StatCard
                   title="Estudiantes en riesgo"
-                  value={38}
+                  value={dashboard?.riesgo || 0}
                   icon={AlertTriangle}
                   bgColor="bg-red-50"
                   iconColor="text-red-600"
                 />
               </div>
 
-              {/* Quick Actions */}
-              <div className="mb-8">
-                <QuickActions />
-              </div>
+          
 
               {/* Charts and Alerts Row */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <div className="lg:col-span-1">
-                  <RiskChart />
+                  <RiskChart dashboard={dashboard} />
                 </div>
                 <div className="lg:col-span-2">
-                  <TutorshipChart />
+                  <TutorshipChart dashboard={dashboard} />
                 </div>
               </div>
 
               {/* Recent Alerts */}
               <div>
-                <RecentAlerts />
               </div>
             </>
           )}

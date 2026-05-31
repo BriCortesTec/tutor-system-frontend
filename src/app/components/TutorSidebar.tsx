@@ -24,8 +24,7 @@ export function TutorSidebar({ activeSection, onSectionChange }: TutorSidebarPro
             <BookOpen className="w-6 h-6 text-[#1e3a5f]" />
           </div>
           <div>
-            <h1 className="font-semibold">Sistema de</h1>
-            <h1 className="font-semibold">Tutorados</h1>
+            <h1 className="font-semibold">Tutoría</h1>
           </div>
         </div>
       </div>

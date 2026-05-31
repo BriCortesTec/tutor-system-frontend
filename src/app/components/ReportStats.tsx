@@ -10,13 +10,6 @@ export function ReportStats() {
       iconColor: 'text-blue-600'
     },
     {
-      icon: FileCheck,
-      label: 'Reportes de tutorías realizadas',
-      value: '128',
-      bgColor: 'bg-green-50',
-      iconColor: 'text-green-600'
-    },
-    {
       icon: TrendingUp,
       label: 'Estudiantes con progreso positivo',
       value: '433',
@@ -29,19 +22,12 @@ export function ReportStats() {
       value: '29',
       bgColor: 'bg-orange-50',
       iconColor: 'text-orange-600'
-    },
-    {
-      icon: Target,
-      label: 'Porcentaje de asistencia promedio',
-      value: '87%',
-      bgColor: 'bg-indigo-50',
-      iconColor: 'text-indigo-600'
     }
   ];
 
   return (
     <div>
-      <h3 className="font-semibold mb-4">2. Reportes visuales</h3>
+      <h3 className="font-semibold mb-4"> Reportes visuales</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat, index) => {
           const Icon = stat.icon;

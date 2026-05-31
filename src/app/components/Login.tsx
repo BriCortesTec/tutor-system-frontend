@@ -8,36 +8,52 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   
-  const iniciarSesion = async () => {
-  
-  const formData = new FormData();
-    
-  formData.append("correo", correo);
-  formData.append("password", password);
+ const iniciarSesion = async () => {
 
-  const response = await fetch(
-    "http://127.0.0.1/tutores-api/login.php",
-    {
-      method: "POST",
-      body: formData,
+  try {
+
+    const formData = new FormData();
+
+    formData.append("correo", correo);
+    formData.append("password", password);
+
+    const response = await fetch(
+      "http://127.0.0.1/tutores-api/login.php",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const texto = await response.text();
+
+    console.log(texto);
+
+    alert(texto);
+
+    const data = JSON.parse(texto);
+
+    if (data.success === true) {
+
+      localStorage.setItem("logueado", "true");
+      localStorage.setItem("rol", data.rol);
+
+      window.location.reload();
+
+    } else {
+
+      setError("No hay un usuario con esas credenciales.");
+
     }
-  );
 
-  const data = await response.json();
-  
-  console.log(data);
-  
-  if (data.success === true) {
+  } catch (error) {
 
-    localStorage.setItem("logueado", "true");
-    localStorage.setItem("rol", data.rol);
+    console.log(error);
 
-    window.location.reload();
-
-  } else {
-    setError("No hay un usuario con esas credenciales.");
+    alert("Error en fetch o JSON");
 
   }
+
 };
 
   return (
