@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export function TutorshipChart({ dashboard }: any) {
-  const data = dashboard?.tutoriasMeses || [];
+  const data = dashboard?.tutorias || [];
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">

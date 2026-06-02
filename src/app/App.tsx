@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { StatCard } from './components/StatCard';
 
+
 import { RiskChart } from './components/RiskChart';
 import { TutorshipChart } from './components/TutorshipChart';
 import { ReportsView } from './components/ReportsView';
@@ -33,8 +34,9 @@ export default function App() {
 
   const [activeSection, setActiveSection] = useState('inicio');
   const [dashboard, setDashboard] = useState<any>(null);
+  
   useEffect(() => {
-
+    
   fetch("http://127.0.0.1/tutores-api/dashboard_coordinadora.php")
     .then((response) => response.json())
     .then((data) => {
@@ -44,6 +46,7 @@ export default function App() {
       setDashboard(data);
 
     });
+    
 
 }, []);
   if (!logueado) {
@@ -152,7 +155,7 @@ export default function App() {
                   <RiskChart dashboard={dashboard} />
                 </div>
                 <div className="lg:col-span-2">
-                  <TutorshipChart dashboard={dashboard} />
+                  <TutorshipChart dashboard={dashboard} /> 
                 </div>
               </div>
 

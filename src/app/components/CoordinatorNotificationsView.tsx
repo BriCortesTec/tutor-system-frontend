@@ -1,112 +1,27 @@
 import { Bell, CheckCircle, AlertCircle, Info, AlertTriangle, Search, Filter, Plus, UserPlus, FileText, Mail, BarChart3 } from 'lucide-react';
+import { useEffect, useState } from "react";
 
 export function CoordinatorNotificationsView() {
-  const notifications = [
-    {
-      id: 1,
-      type: 'info',
-      icon: Info,
-      iconBg: 'bg-blue-50',
-      iconColor: 'text-blue-600',
-      title: 'Nuevo estudiante registrado en el sistema',
-      description: 'Ana Laura Gómez (2021-0456) ha sido agregado al sistema',
-      date: '22/05/2026',
-      time: '10:30 AM',
-      priority: 'Normal',
-      read: false
-    },
-    {
-      id: 2,
-      type: 'success',
-      icon: CheckCircle,
-      iconBg: 'bg-green-50',
-      iconColor: 'text-green-600',
-      title: 'Reporte mensual completado',
-      description: 'El reporte de tutorías del mes de mayo ha sido generado exitosamente',
-      date: '22/05/2026',
-      time: '09:15 AM',
-      priority: 'Normal',
-      read: false
-    },
-    {
-      id: 3,
-      type: 'warning',
-      icon: AlertTriangle,
-      iconBg: 'bg-yellow-50',
-      iconColor: 'text-yellow-600',
-      title: 'Tutor con carga alta de estudiantes',
-      description: 'Mtro. Javier López tiene asignados 25 estudiantes, considera redistribuir',
-      date: '21/05/2026',
-      time: '04:45 PM',
-      priority: 'Media',
-      read: true
-    },
-    {
-      id: 4,
-      type: 'alert',
-      icon: AlertCircle,
-      iconBg: 'bg-red-50',
-      iconColor: 'text-red-600',
-      title: 'Estudiante en riesgo académico alto',
-      description: 'Pedro Sánchez Ruiz requiere atención inmediata - Promedio: 6.8',
-      date: '21/05/2026',
-      time: '02:30 PM',
-      priority: 'Alta',
-      read: true
-    },
-    {
-      id: 5,
-      type: 'info',
-      icon: Info,
-      iconBg: 'bg-blue-50',
-      iconColor: 'text-blue-600',
-      title: 'Recordatorio de reunión académica',
-      description: 'Junta de coordinación programada para el 25 de mayo a las 10:00 AM',
-      date: '21/05/2026',
-      time: '11:00 AM',
-      priority: 'Normal',
-      read: true
-    },
-    {
-      id: 6,
-      type: 'success',
-      icon: CheckCircle,
-      iconBg: 'bg-green-50',
-      iconColor: 'text-green-600',
-      title: 'Asignación completada exitosamente',
-      description: 'María Fernández López ha sido asignada a Mtro. Carlos Ramírez',
-      date: '20/05/2026',
-      time: '03:20 PM',
-      priority: 'Normal',
-      read: true
-    },
-    {
-      id: 7,
-      type: 'info',
-      icon: Info,
-      iconBg: 'bg-blue-50',
-      iconColor: 'text-blue-600',
-      title: 'Actualización del sistema programada',
-      description: 'Mantenimiento del sistema el 26 de mayo de 2:00 AM a 4:00 AM',
-      date: '20/05/2026',
-      time: '10:00 AM',
-      priority: 'Normal',
-      read: true
-    },
-    {
-      id: 8,
-      type: 'warning',
-      icon: AlertTriangle,
-      iconBg: 'bg-yellow-50',
-      iconColor: 'text-yellow-600',
-      title: '5 reportes de tutoría pendientes de revisión',
-      description: 'Hay reportes sin revisar de la semana pasada',
-      date: '19/05/2026',
-      time: '05:00 PM',
-      priority: 'Media',
-      read: true
-    }
-  ];
+  
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+    useEffect(() => {
+
+      obtenerAvisos();
+
+    }, []);
+
+  const obtenerAvisos = async () => {
+    
+  const response = await fetch(
+    "http://127.0.0.1/tutores-api/obtener_avisos.php"
+  );
+
+  const data = await response.json();
+  console.log(data);
+  setNotifications(data);
+
+};
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -120,7 +35,15 @@ export function CoordinatorNotificationsView() {
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const totalAvisos = notifications.length;
 
+  const leidos = notifications.filter(
+    n => n.leido === true || n.leido === "t"
+  ).length;
+
+  const importantes = notifications.filter(
+    n => n.prioridad === "Alta"
+  ).length;
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -144,7 +67,7 @@ export function CoordinatorNotificationsView() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total avisos</p>
-              <p className="font-semibold">28</p>
+              <p className="font-semibold">{totalAvisos}</p>
             </div>
           </div>
         </div>
@@ -156,7 +79,7 @@ export function CoordinatorNotificationsView() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Leídos</p>
-              <p className="font-semibold">18</p>
+              <p className="font-semibold">{leidos}</p>
             </div>
           </div>
         </div>
@@ -180,7 +103,7 @@ export function CoordinatorNotificationsView() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Alertas importantes</p>
-              <p className="font-semibold">104</p>
+              <p className="font-semibold">{importantes}</p>
             </div>
           </div>
         </div>
@@ -208,72 +131,46 @@ export function CoordinatorNotificationsView() {
           </div>
 
           <div className="divide-y divide-gray-100">
-            {notifications.map((notification) => {
-              const Icon = notification.icon;
-              return (
-                <div
-                  key={notification.id}
-                  className={`p-4 hover:bg-gray-50 transition-colors ${
-                    !notification.read ? 'bg-blue-50/30' : ''
-                  }`}
-                >
-                  <div className="flex gap-4">
-                    <div className={`${notification.iconBg} p-3 rounded-lg h-fit`}>
-                      <Icon className={`w-5 h-5 ${notification.iconColor}`} />
-                    </div>
+            {notifications.map((notification) => (
+              <div
+                key={notification.id_aviso}
+                className="p-6 border-b border-gray-100"
+              >
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold text-sm">{notification.title}</h4>
-                            {!notification.read && (
-                              <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600">{notification.description}</p>
-                        </div>
-                        <span className={`text-xs px-2 py-1 rounded-full font-medium ml-3 whitespace-nowrap ${getPriorityColor(notification.priority)}`}>
-                          {notification.priority}
-                        </span>
-                      </div>
+                <div className="flex items-start justify-between">
 
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
-                          <span>{notification.date}</span>
-                          <span>{notification.time}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          {!notification.read && (
-                            <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
-                              Marcar como leída
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                  <div>
+
+                    <h3 className="font-semibold text-gray-800">
+                      {notification.titulo}
+                    </h3>
+
+                    <p className="text-gray-600 mt-1">
+                      {notification.descripcion}
+                    </p>
+
+                    <p className="text-sm text-gray-400 mt-2">
+                      {new Date(notification.fecha).toLocaleString("es-MX", {
+  dateStyle: "short",
+  timeStyle: "short"
+})}
+                    </p>
+
                   </div>
+
+                  <span className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
+                    {notification.prioridad}
+                  </span>
+
                 </div>
-              );
-            })}
+
+              </div>
+
+            ))}
           </div>
 
           <div className="p-4 border-t border-gray-200 flex justify-between items-center">
-            <span className="text-sm text-gray-600">Mostrando 8 de 28 avisos</span>
-            <div className="flex gap-2">
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                Anterior
-              </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-                1
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                Siguiente
-              </button>
-            </div>
+            <span className="text-sm text-gray-600">Mostrando {notifications.length} avisos</span>
           </div>
         </div>
 
