@@ -12,9 +12,7 @@ export function ReportStats({ reportes }: any) {
     (r: any) => r.estatus === "Pendiente"
   ).length;
 
-<<<<<<< Updated upstream
   const stats = [
-
     {
       icon: FileCheck,
       label: 'Total de reportes',
@@ -22,7 +20,6 @@ export function ReportStats({ reportes }: any) {
       bgColor: 'bg-blue-50',
       iconColor: 'text-blue-600'
     },
-
     {
       icon: TrendingUp,
       label: 'Reportes completados',
@@ -30,7 +27,6 @@ export function ReportStats({ reportes }: any) {
       bgColor: 'bg-green-50',
       iconColor: 'text-green-600'
     },
-
     {
       icon: AlertCircle,
       label: 'Reportes pendientes',
@@ -38,93 +34,27 @@ export function ReportStats({ reportes }: any) {
       bgColor: 'bg-orange-50',
       iconColor: 'text-orange-600'
     }
-
   ];
-=======
-export function ReportStats({ reportes }: any) {
-  const total = reportes.length;
-    const completados = reportes.filter(
-      (r: any) => r.estatus === "Completado"
-    ).length;
-
-    const pendientes = reportes.filter(
-      (r: any) => r.estatus === "Pendiente"
-    ).length;
-  const stats = [
-
-  {
-    icon: FileCheck,
-    label: 'Total de reportes',
-    value: total,
-    bgColor: 'bg-blue-50',
-    iconColor: 'text-blue-600'
-  },
-
-  {
-    icon: TrendingUp,
-    label: 'Reportes completados',
-    value: completados,
-    bgColor: 'bg-green-50',
-    iconColor: 'text-green-600'
-  },
-
-  {
-    icon: AlertCircle,
-    label: 'Reportes pendientes',
-    value: pendientes,
-    bgColor: 'bg-orange-50',
-    iconColor: 'text-orange-600'
-  }
-
-];
-    
->>>>>>> Stashed changes
 
   return (
-
     <div>
-
       <h3 className="font-semibold mb-4">
         Reportes visuales
       </h3>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
         {stats.map((stat, index) => {
-
           const Icon = stat.icon;
-
           return (
-
-            <div
-              key={index}
-              className="bg-white rounded-lg p-4 shadow-sm"
-            >
-
+            <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
               <div className={`${stat.bgColor} p-3 rounded-lg w-fit mb-3`}>
-
                 <Icon className={`w-6 h-6 ${stat.iconColor}`} />
-
               </div>
-
-              <p className="text-sm text-gray-600 mb-2">
-                {stat.label}
-              </p>
-
-              <p className="font-semibold text-2xl">
-                {stat.value}
-              </p>
-
+              <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
+              <p className="font-semibold text-2xl">{stat.value}</p>
             </div>
-
           );
-
         })}
-
       </div>
-
     </div>
-
   );
-
 }
