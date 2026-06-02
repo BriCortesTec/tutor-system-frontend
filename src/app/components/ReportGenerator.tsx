@@ -1,6 +1,16 @@
 import { Search, Download, Mail } from 'lucide-react';
 
-export function ReportGenerator() {
+export function ReportGenerator({
+
+  busquedaTutor,
+
+  setBusquedaTutor,
+
+  estatusFiltro,
+
+  setEstatusFiltro
+
+}: any) {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <h3 className="font-semibold mb-6">   Selecciona los filtros del reporte</h3>
@@ -11,7 +21,10 @@ export function ReportGenerator() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Buscar por nombre..."
+              placeholder="Buscar por nombre"
+              value={busquedaTutor}
+
+              onChange={(e) => setBusquedaTutor(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10"
             />
             <Search className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
@@ -19,40 +32,29 @@ export function ReportGenerator() {
         </div>
 
         <div>
-          <label className="text-sm text-gray-600 mb-2 block">Nivel</label>
-          <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
-            <option>Todos</option>
-            <option>1er Semestre</option>
-            <option>2do Semestre</option>
-            <option>3er Semestre</option>
-            <option>4to Semestre</option>
-          </select>
-        </div>
 
-        <div>
-          <label className="text-sm text-gray-600 mb-2 block">Tutorados</label>
-          <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
-            <option>Selecciona</option>
-          </select>
-        </div>
+  <label className="text-sm text-gray-600 mb-2 block">
+    Estatus de tutoría
+  </label>
 
-        <div>
-          <label className="text-sm text-gray-600 mb-2 block">Estatus de tutoría</label>
-          <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
-            <option>Todos</option>
-            <option>Activo</option>
-            <option>Inactivo</option>
-          </select>
-        </div>
+  <select
 
-        <div>
-          <label className="text-sm text-gray-600 mb-2 block">Periodo académico</label>
-          <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
-            <option>2025-2026</option>
-            <option>2024-2025</option>
-            <option>2023-2024</option>
-          </select>
-        </div>
+    value={estatusFiltro}
+
+    onChange={(e) => setEstatusFiltro(e.target.value)}
+
+    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+  >
+
+    <option>Todos</option>
+
+    <option>Completado</option>
+
+    <option>Pendiente</option>
+
+  </select>
+
+</div>
 
         <div>
           <label className="text-sm text-gray-600 mb-2 block">Acciones</label>

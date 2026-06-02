@@ -1,17 +1,27 @@
-import { Home, UserCheck, FileText, Bell, BookOpen } from 'lucide-react';
+import { Home, UserCheck, FileText, Bell, BookOpen,LogOut } from 'lucide-react';
 
 interface SidebarProps {
+  setLogueado: any;
   activeSection: string;
   onSectionChange: (section: string) => void;
 }
 
-export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
+export function Sidebar({
+
+  activeSection,
+
+  onSectionChange,
+
+  setLogueado
+
+}: SidebarProps) {
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: Home },
     { id: 'tutores', label: 'Tutores', icon: UserCheck },
     { id: 'reportes', label: 'Reportes', icon: FileText },
     { id: 'avisos', label: 'Avisos', icon: Bell },
   ];
+  
 
   return (
     <aside className="w-64 bg-[#1e3a5f] text-white h-screen flex flex-col">
@@ -46,19 +56,44 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-6 border-t border-blue-800">
-        <div className="flex items-center gap-3">
-          <img
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
-            alt="Usuario"
-            className="w-10 h-10 rounded-full"
-          />
-          <div className="text-sm">
-            <p className="font-medium">Coordinadora</p>
-            <p className="text-blue-300 text-xs">En línea</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
+      <div className="mt-auto p-4 border-t border-blue-800">
+
+  <div className="flex items-center gap-2 mb-2">
+
+    <img
+      src="/secretary.png"
+      alt="Avatar"
+      className="w-12 h-12 rounded-full object-cover"
+    />
+
+    <div>
+
+      <h2 className="font-semibold text-white">
+        Coordinadora
+      </h2>
+
+    </div>
+
+  </div>
+
+  <button
+  onClick={() => {
+
+  localStorage.removeItem("logueado");
+
+  localStorage.removeItem("rol");
+
+  window.location.href = "/";
+
+}}
+    className="flex items-center gap-2 text-blue-100 hover:text-white transition"
+  >
+    <LogOut className="w-5 h-5" />
+
+    Salir
+  </button>
+
+</div>
+          </aside>
+        );
 }

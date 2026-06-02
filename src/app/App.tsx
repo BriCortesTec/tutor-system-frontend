@@ -70,12 +70,23 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <Sidebar
+
+  activeSection={activeSection}
+
+  onSectionChange={setActiveSection}
+
+  setLogueado={setLogueado}
+
+/>
 
       <main className="flex-1 overflow-auto">
-        {/* Header */}
-        <header className="bg-white shadow-sm sticky top-0 z-10">
-          <div className="px-8 py-4 flex justify-between items-center">
+
+        {activeSection === 'inicio' && (
+
+          <header className="bg-white shadow-sm sticky top-0 z-10">
+
+      <div className="px-8 py-4 flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white">
                 <Users className="w-6 h-6" />
@@ -89,10 +100,7 @@ export default function App() {
               <div className="flex gap-2">
                 
               </div>
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg">
-                <Bell className="w-5 h-5 text-gray-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+              
               <button
                 onClick={() => {
 
@@ -110,6 +118,9 @@ export default function App() {
             </div>
           </div>
         </header>
+          )}
+
+  <div className="p"></div>
 
         {/* Dashboard Content */}
         <div className="p-8">
@@ -169,7 +180,7 @@ export default function App() {
             <>
               <div className="mb-6">
                 <h2 className="font-semibold mb-2">Generador de Reportes</h2>
-                <p className="text-gray-600">Genera y descarga reportes de tutorados</p>
+      
               </div>
               <ReportsView />
             </>

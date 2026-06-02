@@ -13,6 +13,9 @@ export function TutorsManagementView() {
   const [editando, setEditando] = useState(false);
   const [idTutorEditar, setIdTutorEditar] = useState("");
   const [idUsuarioEditar, setIdUsuarioEditar] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [tutorEliminar, setTutorEliminar] = useState<any>(null);
   
   const agregarTutor = async () => {
   const formData = new FormData();
@@ -21,6 +24,8 @@ export function TutorsManagementView() {
   formData.append("correo", correo);
   formData.append("password", password);
   formData.append("departamento", departamento);
+
+  
 
   const response = await fetch(
     "http://127.0.0.1/tutores-api/agregar_tutor.php",
@@ -90,15 +95,13 @@ const abrirEditarTutor = (tutor: any) => {
 
 };
 
-const eliminarTutor = async (id_tutor: string) => {
+const eliminarTutor = async () => {
 
-  const confirmar = confirm("¿Eliminar tutor?");
-
-  if (!confirmar) return;
+  if (!tutorEliminar) return;
 
   const formData = new FormData();
 
-  formData.append("id_tutor", id_tutor);
+  formData.append("id_tutor", tutorEliminar.id_tutor);
 
   const response = await fetch(
     "http://127.0.0.1/tutores-api/eliminar_tutor.php",
@@ -112,7 +115,7 @@ const eliminarTutor = async (id_tutor: string) => {
 
   if (data.success) {
 
-    alert("Tutor eliminado");
+    setShowDeleteModal(false);
 
     window.location.reload();
 
@@ -150,7 +153,7 @@ const eliminarTutor = async (id_tutor: string) => {
           <div className="bg-white rounded-xl p-6 w-[400px]">
 
             <h2 className="text-xl font-semibold mb-4">
-              Agregar tutor
+              Actualizar tutor
             </h2>
 
             <div className="space-y-4">
@@ -213,7 +216,55 @@ const eliminarTutor = async (id_tutor: string) => {
         </div>
 
       )
+
+
     }
+
+      {
+  showDeleteModal && (
+
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+      <div className="bg-white rounded-xl p-6 w-[400px]">
+
+        <h2 className="text-xl font-semibold mb-4 text-red-600">
+          Eliminar tutor
+        </h2>
+
+        <p className="text-gray-700">
+          ¿Seguro que deseas eliminar a:
+        </p>
+
+        <p className="font-semibold mt-2">
+          {tutorEliminar?.nombre} ?
+        </p>
+
+        <div className="flex justify-end gap-3 mt-6">
+
+          <button
+            onClick={() => setShowDeleteModal(false)}
+            className="px-4 py-2 border rounded-lg"
+          >
+            Cancelar
+          </button>
+
+          <button
+            onClick={eliminarTutor}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg"
+          >
+            Eliminar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  )
+}
+
+
         <button 
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" 
@@ -311,7 +362,14 @@ const eliminarTutor = async (id_tutor: string) => {
     </button>
 
     <button
-      onClick={() => eliminarTutor(tutor.id_tutor)}
+      onClick={() => {
+
+  setTutorEliminar(tutor);
+
+  setShowDeleteModal(true);
+
+}}
+
       className="p-1 hover:bg-gray-100 rounded"
     >
       <Trash2 className="w-4 h-4 text-red-600" />

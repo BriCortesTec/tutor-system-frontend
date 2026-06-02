@@ -1,49 +1,7 @@
 import { Download, Mail } from 'lucide-react';
 
-export function ReportDetailsTable() {
-  const reports = [
-    {
-      id: 1,
-      student: 'Juan Pérez García',
-      tutor: 'María González',
-      date: '15/03/2026',
-      status: 'Completado',
-      reason: 'Bajo rendimiento'
-    },
-    {
-      id: 2,
-      student: 'Ana López Martínez',
-      tutor: 'Carlos Ramírez',
-      date: '14/03/2026',
-      status: 'Completado',
-      reason: 'Ansiedad/Estrés'
-    },
-    {
-      id: 3,
-      student: 'Pedro Sánchez Ruiz',
-      tutor: 'Elena Torres',
-      date: '13/03/2026',
-      status: 'Pendiente',
-      reason: 'Problemas familiares'
-    },
-    {
-      id: 4,
-      student: 'Laura Hernández Cruz',
-      tutor: 'Luis Fernández',
-      date: '12/03/2026',
-      status: 'Completado',
-      reason: 'Bajo rendimiento'
-    },
-    {
-      id: 5,
-      student: 'Miguel Ángel Torres',
-      tutor: 'Ana Martínez',
-      date: '11/03/2026',
-      status: 'Completado',
-      reason: 'Otros'
-    }
-  ];
-
+export function ReportDetailsTable({ reportes }: any) {
+  
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <h3 className="font-semibold mb-4">Detalle de reportes</h3>
@@ -52,29 +10,29 @@ export function ReportDetailsTable() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 text-sm text-gray-600">Estudiante</th>
-              <th className="text-left py-3 px-4 text-sm text-gray-600">Tutor</th>
-              <th className="text-left py-3 px-4 text-sm text-gray-600">Fecha</th>
-              <th className="text-left py-3 px-4 text-sm text-gray-600">Estatus</th>
-              <th className="text-left py-3 px-4 text-sm text-gray-600">Motivo</th>
+              <th className="text-left py-3 px-4 text-sm text-gray-600">estudiante</th>
+              <th className="text-left py-3 px-4 text-sm text-gray-600">tutor</th>
+              <th className="text-left py-3 px-4 text-sm text-gray-600">fecha</th>
+              <th className="text-left py-3 px-4 text-sm text-gray-600">estatus</th>
+              <th className="text-left py-3 px-4 text-sm text-gray-600">motivo</th>
             </tr>
           </thead>
           <tbody>
-            {reports.map((report) => (
-              <tr key={report.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-3 px-4 text-sm">{report.student}</td>
-                <td className="py-3 px-4 text-sm">{report.tutor}</td>
-                <td className="py-3 px-4 text-sm">{report.date}</td>
+            {reportes.map((reporte: any) => (
+              <tr key={reporte.id_reporte} className="border-b border-gray-100 hover:bg-gray-50">
+                <td className="py-3 px-4 text-sm">{reporte.estudiante}</td>
+                <td className="py-3 px-4 text-sm">{reporte.tutor}</td>
+                <td className="py-3 px-4 text-sm">{reporte.fecha}</td>
                 <td className="py-3 px-4">
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    report.status === 'Completado'
+                    reporte.estatus === 'Completado'
                       ? 'bg-green-100 text-green-700'
                       : 'bg-yellow-100 text-yellow-700'
                   }`}>
-                    {report.status}
+                    {reporte.estatus}
                   </span>
                 </td>
-                <td className="py-3 px-4 text-sm text-gray-600">{report.reason}</td>
+                <td className="py-3 px-4 text-sm text-gray-600">{reporte.motivo}</td>
               </tr>
             ))}
           </tbody>
