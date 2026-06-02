@@ -30,11 +30,19 @@ useEffect(() => {
 
   const reportesFiltrados = reportes.filter((reporte: any) => {
 
-  const coincideTutor =
+  const coincideBusqueda =
 
-    reporte.tutor
-      .toLowerCase()
-      .includes(busquedaTutor.toLowerCase());
+  reporte.estudiante
+    .toLowerCase()
+    .includes(busquedaTutor.toLowerCase())
+
+  ||
+
+  reporte.tutor
+    .toLowerCase()
+    .includes(busquedaTutor.toLowerCase());
+
+
 
   const coincideEstatus =
 
@@ -42,7 +50,8 @@ useEffect(() => {
 
     reporte.estatus === estatusFiltro;
 
-  return coincideTutor && coincideEstatus;
+  return coincideBusqueda && coincideEstatus;
+
 
 });
   return (
@@ -58,11 +67,11 @@ useEffect(() => {
         setEstatusFiltro={setEstatusFiltro}
 
       />
-      <ReportStats />
+      <ReportStats reportes={reportes} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
-          <AcademicReasonsChart />
+          <AcademicReasonsChart reportes={reportes} />
         </div>
         <div className="lg:col-span-2">
           <ReportDetailsTable reportes={reportesFiltrados} />

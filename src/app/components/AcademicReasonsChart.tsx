@@ -1,44 +1,118 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
-export function AcademicReasonsChart() {
-  const data = [
-    { id: '1', name: 'Problemas familiares', value: 45, color: '#3b82f6' },
-    { id: '2', name: 'Bajo rendimiento', value: 65, color: '#10b981' },
-    { id: '3', name: 'Ansiedad/Estrés', value: 35, color: '#f59e0b' },
-    { id: '4', name: 'Otros', value: 28, color: '#ef4444' }
-  ];
+export function AcademicReasonsChart({ reportes }: any) {
+  
+  const bajoRendimiento = reportes.filter(
+  (r: any) => r.motivo === "Bajo rendimiento"
+).length;
 
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+const ansiedad = reportes.filter(
+  (r: any) => r.motivo === "Ansiedad/Estrés"
+).length;
+
+const familiares = reportes.filter(
+  (r: any) => r.motivo === "Problemas familiares"
+).length;
+
+const otros = reportes.filter(
+  (r: any) => r.motivo === "Otros"
+).length;
+
+  const data = [
+
+  {
+    label: "Bajo rendimiento",
+    value: bajoRendimiento,
+    color: "#3B82F6"
+  },
+
+  {
+    label: "Ansiedad/Estrés",
+    value: ansiedad,
+    color: "#F59E0B"
+  },
+
+  {
+    label: "Problemas familiares",
+    value: familiares,
+    color: "#EF4444"
+  },
+
+  {
+    label: "Otros",
+    value: otros,
+    color: "#10B981"
+  }
+
+];
+
+
+
+const total = data.reduce((sum, item) => sum + item.value, 0);
+  
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <h3 className="font-semibold mb-4">Motivos de reporte académico</h3>
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={320}>
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
             innerRadius={70}
-            outerRadius={100}
+            outerRadius={85}
             paddingAngle={3}
             dataKey="value"
-            nameKey="name"
+            nameKey="label"
           >
             {data.map((entry) => (
-              <Cell key={entry.id} fill={entry.color} />
+              <Cell key={entry.label} fill={entry.color} />
             ))}
           </Pie>
-          <Legend
-            verticalAlign="bottom"
-            height={50}
-            formatter={(value, entry: any) => {
-              const percentage = ((entry.payload.value / total) * 100).toFixed(0);
-              return `${value}: ${entry.payload.value} (${percentage}%)`;
-            }}
-          />
         </PieChart>
       </ResponsiveContainer>
+      <div className="mt-4 space-y-2">
+
+  {data.map((item) => {
+
+    const porcentaje = total > 0
+      ? ((item.value / total) * 100).toFixed(0)
+      : 0;
+
+    return (
+
+      <div
+        key={item.label}
+        className="flex items-center justify-between text-sm"
+      >
+
+        <div className="flex items-center gap-2">
+
+          <div
+            className="w-3 h-3 rounded-full"
+            style={{ backgroundColor: item.color }}
+          />
+
+          <span>
+            {item.label}
+          </span>
+
+        </div>
+
+        <span className="font-medium">
+
+          {item.value} ({porcentaje}%)
+
+        </span>
+
+      </div>
+
+    );
+
+  })}
+
+</div>
     </div>
   );
 }

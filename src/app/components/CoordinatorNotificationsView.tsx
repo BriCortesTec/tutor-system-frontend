@@ -154,18 +154,7 @@ export function CoordinatorNotificationsView() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="font-semibold mb-1">Avisos</h2>
-          <p className="text-sm text-gray-600">Centro de notificaciones del sistema</p>
-        </div>
-        <button 
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-          <Plus className="w-4 h-4" />
-          Nuevo aviso
-        </button>
-      </div>
+      
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
