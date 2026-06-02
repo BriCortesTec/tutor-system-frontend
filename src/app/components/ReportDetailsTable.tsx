@@ -1,11 +1,29 @@
 import { Download, Mail } from 'lucide-react';
+import { useState } from 'react';
 
-export function ReportDetailsTable({ reportes }: any) {
+export function ReportDetailsTable({
 
-  // =========================
-  // COMPLETAR REPORTE
-  // =========================
+  reportes,
 
+  obtenerReportes
+
+}: any) {
+  const [paginaActual, setPaginaActual] = useState(1);
+
+  const reportesPorPagina = 5;
+
+  const ultimoIndice = paginaActual * reportesPorPagina;
+
+  const primerIndice = ultimoIndice - reportesPorPagina;
+
+  const reportesPaginados = reportes.slice(
+    primerIndice,
+    ultimoIndice
+  );
+
+  const totalPaginas = Math.ceil(
+    reportes.length / reportesPorPagina
+  );
   const completarReporte = async (id: number) => {
 
     await fetch(
@@ -36,20 +54,15 @@ export function ReportDetailsTable({ reportes }: any) {
 
   const exportarReporte = async (reporte: any) => {
 
-    // marcar como completado
+      window.open(
 
-    await completarReporte(reporte.id_reporte);
+        `http://127.0.0.1/tutores-api/exportar_reporte.php?id=${reporte.id_reporte}`
 
-    // TEMPORAL
-    // aquí después irá el PDF real
+      );
 
-    alert(
-      `Exportando reporte de ${reporte.estudiante}`
-    );
+      await obtenerReportes();
 
-    window.location.reload();
-
-  };
+    };
 
   // =========================
   // ENVIAR CORREO
@@ -59,7 +72,7 @@ export function ReportDetailsTable({ reportes }: any) {
 
     // marcar como completado
 
-    await completarReporte(reporte.id_reporte);
+    
 
     // TEMPORAL
     // aquí después irá PHPMailer
@@ -68,13 +81,13 @@ export function ReportDetailsTable({ reportes }: any) {
       `Enviando correo de ${reporte.estudiante}`
     );
 
-    window.location.reload();
+    
 
   };
 
   return (
 
-    <div className="bg-white rounded-xl p-5 shadow-sm">
+    <div className="bg-white rounded-xl p-5 shadow-sm h-full">
 
       <h3 className="font-semibold text-xl mb-5">
         Detalle de reportes
@@ -118,7 +131,7 @@ export function ReportDetailsTable({ reportes }: any) {
 
           <tbody>
 
-            {reportes.map((reporte: any) => (
+            {reportesPaginados.map((reporte: any) => (
 
               <tr
                 key={reporte.id_reporte}
@@ -183,21 +196,29 @@ export function ReportDetailsTable({ reportes }: any) {
 
                     {/* EXPORTAR */}
 
-                    <button
+                        <button
 
-                      onClick={() => exportarReporte(reporte)}
+                          onClick={() =>
 
-                      className="flex items-center justify-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition text-xs md:text-sm"
+                            window.open(
 
-                    >
+                              `http://127.0.0.1/tutores-api/exportar_reporte.php?id=${reporte.id_reporte}`
 
-                      <Download className="w-4 h-4" />
+                            )
 
-                      Exportar
+                          }
 
-                    </button>
+                          className="flex items-center justify-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition text-xs md:text-sm"
 
-                    {/* CORREO */}
+                        >
+
+                          <Download className="w-4 h-4" />
+
+                          Exportar
+
+                        </button>
+
+                    {/* CORREO 
 
                     <button
 
@@ -212,7 +233,7 @@ export function ReportDetailsTable({ reportes }: any) {
                       Correo
 
                     </button>
-
+*/}
                   </div>
 
                 </td>
@@ -224,6 +245,47 @@ export function ReportDetailsTable({ reportes }: any) {
           </tbody>
 
         </table>
+        <div className="flex justify-between items-center mt-4">
+
+          <button
+
+            onClick={() =>
+              setPaginaActual(paginaActual - 1)
+            }
+
+            disabled={paginaActual === 1}
+
+            className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-50"
+
+          >
+
+            Anterior
+
+          </button>
+
+          <span className="text-sm text-gray-600">
+
+            Página {paginaActual} de {totalPaginas}
+
+          </span>
+
+          <button
+
+            onClick={() =>
+              setPaginaActual(paginaActual + 1)
+            }
+
+            disabled={paginaActual === totalPaginas}
+
+            className="px-4 py-2 rounded-lg border border-gray-300 disabled:opacity-50"
+
+          >
+
+            Siguiente
+
+          </button>
+
+        </div>
 
       </div>
 

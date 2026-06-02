@@ -52,7 +52,7 @@ const total = data.reduce((sum, item) => sum + item.value, 0);
   
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-white rounded-lg p-6 shadow-sm h-full">
       <h3 className="font-semibold mb-4">Motivos de reporte académico</h3>
       <ResponsiveContainer width="100%" height={320}>
         <PieChart>

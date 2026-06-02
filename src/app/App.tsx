@@ -34,21 +34,38 @@ export default function App() {
 
   const [activeSection, setActiveSection] = useState('inicio');
   const [dashboard, setDashboard] = useState<any>(null);
-  
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
+
+  const obtenerDashboard = async () => {
+
+  const response = await fetch(
+    "http://127.0.0.1/tutores-api/dashboard_stats.php"
+  );
+
+  const data = await response.json();
+
+    setDashboardStats(data);
+
+  };
+
   useEffect(() => {
-    
-  fetch("http://127.0.0.1/tutores-api/dashboard_coordinadora.php")
-    .then((response) => response.json())
-    .then((data) => {
 
-      console.log(data);
+    fetch("http://127.0.0.1/tutores-api/dashboard_coordinadora.php")
 
-      setDashboard(data);
+      .then((response) => response.json())
 
-    });
-    
+      .then((data) => {
 
-}, []);
+        console.log(data);
+
+        setDashboard(data);
+
+      });
+
+    obtenerDashboard();
+
+  }, []);
+  
   if (!logueado) {
     return <Login />;
   }
@@ -77,6 +94,8 @@ export default function App() {
   onSectionChange={setActiveSection}
 
   setLogueado={setLogueado}
+
+  
 
 />
 
@@ -130,16 +149,10 @@ export default function App() {
                   bgColor="bg-green-50"
                   iconColor="text-green-600"
                 />
-                <StatCard
-                  title="Reportes realizados"
-                  value={dashboard?.reportes || 0}
-                  icon={FileText}
-                  bgColor="bg-orange-50"
-                  iconColor="text-orange-600"
-                />
+              
                 <StatCard
                   title="Estudiantes en riesgo"
-                  value={dashboard?.riesgo || 0}
+                  value={dashboardStats?.pendientes || 0}
                   icon={AlertTriangle}
                   bgColor="bg-red-50"
                   iconColor="text-red-600"
@@ -151,10 +164,10 @@ export default function App() {
               {/* Charts and Alerts Row */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <div className="lg:col-span-1">
-                  <RiskChart dashboard={dashboard} />
+                  <RiskChart dashboardStats={dashboardStats} />
                 </div>
                 <div className="lg:col-span-2">
-                  <TutorshipChart dashboard={dashboard} /> 
+                  <TutorshipChart dashboardStats={dashboardStats} /> 
                 </div>
               </div>
 

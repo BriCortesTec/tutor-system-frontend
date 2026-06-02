@@ -1,59 +1,113 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
 
-export function RiskChart({ dashboard }: any) {
-  const data = [
-  {
-    id: 'alto',
-    name: 'Riesgo alto',
-    value: dashboard?.riesgoAlto || 0,
-    color: '#ef4444'
-  },
-  {
-    id: 'medio',
-    name: 'Riesgo medio',
-    value: dashboard?.riesgoMedio || 0,
-    color: '#f59e0b'
-  },
-  {
-    id: 'bajo',
-    name: 'Riesgo bajo',
-    value: dashboard?.riesgoBajo || 0,
-    color: '#22c55e'
-  },
-  {
-    id: 'sin',
-    name: 'Sin riesgo',
-    value: dashboard?.sinRiesgo || 0,
-    color: '#3b82f6'
+export function RiskChart({ dashboardStats }: any) {
+
+  if (!dashboardStats) {
+
+    return (
+
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+
+        Cargando gráfica...
+
+      </div>
+
+    );
+
   }
-];
+
+  const data =
+
+    dashboardStats.motivos.map(
+      (item: any, index: number) => {
+
+        const colores = [
+
+          "#EF4444",
+          "#F59E0B",
+          "#10B981",
+          "#3B82F6"
+
+        ];
+
+        return {
+
+          name: item.motivo,
+
+          value: Number(item.total),
+
+          color: colores[index % colores.length]
+
+        };
+
+      }
+
+    );
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h3 className="font-semibold mb-4">Estudiantes en riesgo</h3>
-      <ResponsiveContainer width="100%" height={250}>
+
+  <div className="bg-white rounded-lg p-6 shadow-sm h-full flex flex-col">
+
+    <h3 className="font-semibold mb-4">
+
+      Motivos de riesgo
+
+    </h3>
+
+    <div className="flex-1 flex flex-col justify-center">
+
+      <ResponsiveContainer width="100%" height={300}>
+
         <PieChart>
+
           <Pie
             data={data}
             cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={90}
+            cy="42%"
+            innerRadius={65}
+            outerRadius={95}
             paddingAngle={2}
             dataKey="value"
             nameKey="name"
           >
-            {data.map((entry) => (
-              <Cell key={`cell-${entry.id}`} fill={entry.color} />
+
+            {data.map((entry: any) => (
+
+              <Cell
+                key={`cell-${entry.name}`}
+                fill={entry.color}
+              />
+
             ))}
+
           </Pie>
+
           <Legend
             verticalAlign="bottom"
-            height={36}
-            formatter={(value, entry: any) => `${value}: ${entry.payload.value}`}
+            align="center"
+            wrapperStyle={{
+              fontSize: "14px",
+              paddingTop: "10px"
+            }}
+            formatter={(value, entry: any) =>
+              `${value}: ${entry.payload.value}`
+            }
           />
+
         </PieChart>
+
       </ResponsiveContainer>
+
     </div>
-  );
+
+  </div>
+
+);
+
 }
