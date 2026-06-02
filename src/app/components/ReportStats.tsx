@@ -12,6 +12,7 @@ export function ReportStats({ reportes }: any) {
     (r: any) => r.estatus === "Pendiente"
   ).length;
 
+<<<<<<< Updated upstream
   const stats = [
 
     {
@@ -39,6 +40,45 @@ export function ReportStats({ reportes }: any) {
     }
 
   ];
+=======
+export function ReportStats({ reportes }: any) {
+  const total = reportes.length;
+    const completados = reportes.filter(
+      (r: any) => r.estatus === "Completado"
+    ).length;
+
+    const pendientes = reportes.filter(
+      (r: any) => r.estatus === "Pendiente"
+    ).length;
+  const stats = [
+
+  {
+    icon: FileCheck,
+    label: 'Total de reportes',
+    value: total,
+    bgColor: 'bg-blue-50',
+    iconColor: 'text-blue-600'
+  },
+
+  {
+    icon: TrendingUp,
+    label: 'Reportes completados',
+    value: completados,
+    bgColor: 'bg-green-50',
+    iconColor: 'text-green-600'
+  },
+
+  {
+    icon: AlertCircle,
+    label: 'Reportes pendientes',
+    value: pendientes,
+    bgColor: 'bg-orange-50',
+    iconColor: 'text-orange-600'
+  }
+
+];
+    
+>>>>>>> Stashed changes
 
   return (
 
