@@ -101,20 +101,8 @@ export default function App() {
                 
               </div>
               
-              <button
-                onClick={() => {
-
-                  localStorage.removeItem("logueado");
-                  localStorage.removeItem("rol");
-
-                  window.location.reload();
-
-                }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="text-sm">Salir</span>
-              </button>
+              
+            
             </div>
           </div>
         </header>
