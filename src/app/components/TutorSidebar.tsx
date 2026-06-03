@@ -65,7 +65,7 @@ export function TutorSidebar({ activeSection, onSectionChange, nombreTutor }: Tu
     <div className="text-sm">
 
       <p className="font-medium">
-        {nombreTutor}
+        {nombreTutor.toUpperCase()}
       </p>
       <p className="text-blue-300 text-xs">
         Tutor

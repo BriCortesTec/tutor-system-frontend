@@ -11,8 +11,7 @@ import { Bell, LogOut, MessageSquare } from 'lucide-react';
 
 export function TutorApp() {
   const [activeSection, setActiveSection] = useState('inicio');
-  const nombreTutor =
-  localStorage.getItem("nombreTutor");
+  const nombreTutor = localStorage.getItem("nombreTutor") || "";
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -29,7 +28,7 @@ export function TutorApp() {
               <div>
 
                 <h2 className="font-semibold">
-                  ¡Bienvenido {nombreTutor?.toUpperCase()}!
+                  ¡Hola {nombreTutor?.toUpperCase()}!
                 </h2>
 
                 <p className="text-sm text-gray-500">

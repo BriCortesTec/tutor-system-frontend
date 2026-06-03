@@ -33,14 +33,37 @@ export default function Login() {
 
     const data = JSON.parse(texto);
 
+    alert(JSON.stringify(data));
+
     if (data.success === true) {
 
-      localStorage.setItem("logueado", "true");
-      localStorage.setItem("rol", data.rol);
+  localStorage.setItem("logueado", "true");
 
-      window.location.reload();
+  localStorage.setItem("rol", data.rol);
 
-    } else {
+
+  // TUTOR
+  if (data.rol === "Tutor") {
+
+    localStorage.setItem(
+      "nombreTutor",
+      data.nombre
+    );
+
+  }
+
+  if (data.rol === "Estudiante") {
+
+    localStorage.setItem(
+      "nombreEstudiante",
+      data.nombre
+    );
+
+  }
+
+  window.location.reload();
+
+} else {
 
       setError("No hay un usuario con esas credenciales.");
 

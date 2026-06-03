@@ -1,11 +1,26 @@
-import { Home, Calendar, BookOpen, MessageSquare, Bell } from 'lucide-react';
+import {
+  Home,
+  Calendar,
+  BookOpen,
+  MessageSquare,
+  Bell,
+  LogOut
+} from 'lucide-react';
+
+import estudianteImg from '../../assets/estudiante.png';
 
 interface StudentSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  nombreEstudiante: string;
 }
 
-export function StudentSidebar({ activeSection, onSectionChange }: StudentSidebarProps) {
+export function StudentSidebar({
+  activeSection,
+  onSectionChange,
+  nombreEstudiante
+}: StudentSidebarProps) {
+
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: Home },
     { id: 'mi-agenda', label: 'Mi agenda', icon: Calendar },
@@ -15,22 +30,41 @@ export function StudentSidebar({ activeSection, onSectionChange }: StudentSideba
   ];
 
   return (
+
     <aside className="w-64 bg-[#1e3a5f] text-white h-screen flex flex-col">
+
+      {/* LOGO */}
       <div className="p-6 border-b border-blue-800">
+
         <div className="flex items-center gap-3">
+
           <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+
             <BookOpen className="w-6 h-6 text-[#1e3a5f]" />
+
           </div>
+
           <div>
-            <h1 className="font-semibold">Tutoría</h1>
+
+            <h1 className="font-semibold">
+              Tutoría
+            </h1>
+
           </div>
+
         </div>
+
       </div>
 
+      {/* MENU */}
       <nav className="flex-1 py-6">
+
         {menuItems.map((item) => {
+
           const Icon = item.icon;
+
           return (
+
             <button
               key={item.id}
               onClick={() => onSectionChange(item.id)}
@@ -40,26 +74,70 @@ export function StudentSidebar({ activeSection, onSectionChange }: StudentSideba
                   : 'hover:bg-blue-800/50'
               }`}
             >
+
               <Icon className="w-5 h-5" />
-              <span>{item.label}</span>
+
+              <span>
+                {item.label}
+              </span>
+
             </button>
+
           );
         })}
       </nav>
 
+      {/* FOOTER */}
       <div className="p-6 border-t border-blue-800">
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-3 mb-4">
+
           <img
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
-            alt="Ana Laura"
+            src={estudianteImg}
+            alt="Estudiante"
             className="w-10 h-10 rounded-full"
           />
+
           <div className="text-sm">
-            <p className="font-medium">Ana Laura</p>
-            <p className="text-blue-300 text-xs">Estudiante</p>
+
+            <p className="font-medium uppercase">
+              {nombreEstudiante}
+            </p>
+
+            <p className="text-blue-300 text-xs">
+              Estudiante
+            </p>
+
           </div>
+
         </div>
+
+        <button
+
+          onClick={() => {
+
+            localStorage.removeItem("logueado");
+
+            localStorage.removeItem("rol");
+
+            localStorage.removeItem("nombreEstudiante");
+
+            window.location.href = "/";
+
+          }}
+
+          className="flex items-center gap-2 text-blue-100 hover:text-white transition"
+
+        >
+
+          <LogOut className="w-5 h-5" />
+
+          <span>Salir</span>
+
+        </button>
+
       </div>
+
     </aside>
   );
 }
