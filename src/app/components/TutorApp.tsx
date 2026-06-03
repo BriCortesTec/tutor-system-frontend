@@ -11,50 +11,38 @@ import { Bell, LogOut, MessageSquare } from 'lucide-react';
 
 export function TutorApp() {
   const [activeSection, setActiveSection] = useState('inicio');
+  const nombreTutor =
+  localStorage.getItem("nombreTutor");
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <TutorSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <TutorSidebar activeSection={activeSection} onSectionChange={setActiveSection} nombreTutor={nombreTutor || ""} />
 
       <main className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="bg-white shadow-sm sticky top-0 z-10">
-          <div className="px-8 py-4 flex justify-between items-center">
-            <div>
-              <h2 className="font-semibold">¡Bienvenido, Mtro. Javier López!</h2>
-              <p className="text-sm text-gray-500">Gestiona tus estudiantes y tutorías</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-gray-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
-              </button>
-              
-              <div className="flex items-center gap-2">
-                <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
-                  alt="Javier López"
-                  className="w-8 h-8 rounded-full"
-                />
-                <span className="text-sm font-medium">Javier López</span>
+        {activeSection === "inicio" && (
+
+          <header className="bg-white shadow-sm sticky top-0 z-10">
+
+            <div className="px-8 py-4 flex justify-between items-center">
+
+              <div>
+
+                <h2 className="font-semibold">
+                  ¡Bienvenido {nombreTutor?.toUpperCase()}!
+                </h2>
+
+                <p className="text-sm text-gray-500">
+                  Gestiona tus estudiantes y tutorías
+                </p>
+
               </div>
-              <button
-                onClick={() => {
 
-                  localStorage.removeItem("logueado");
-                  localStorage.removeItem("rol");
-
-                  window.location.reload();
-
-                }}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="text-sm">Salir</span>
-              </button>
             </div>
-          </div>
-        </header>
+
+          </header>
+
+          )}
 
         {/* Content */}
         <div className="p-8">

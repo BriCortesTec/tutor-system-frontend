@@ -1,11 +1,13 @@
-import { Home, Users, Calendar, FileText, MessageSquare, BookOpen, Bell } from 'lucide-react';
+import { Home, Users, Calendar, FileText, MessageSquare, BookOpen, Bell, LogOut } from 'lucide-react';
+import tutorImg from '../../assets/tutor.png';
 
 interface TutorSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  nombreTutor : string;
 }
 
-export function TutorSidebar({ activeSection, onSectionChange }: TutorSidebarProps) {
+export function TutorSidebar({ activeSection, onSectionChange, nombreTutor }: TutorSidebarProps) {
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: Home },
     { id: 'mis-estudiantes', label: 'Mis estudiantes', icon: Users },
@@ -50,18 +52,55 @@ export function TutorSidebar({ activeSection, onSectionChange }: TutorSidebarPro
       </nav>
 
       <div className="p-6 border-t border-blue-800">
-        <div className="flex items-center gap-3">
-          <img
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
-            alt="Javier López"
-            className="w-10 h-10 rounded-full"
-          />
-          <div className="text-sm">
-            <p className="font-medium">Mtro. Javier López</p>
-            <p className="text-blue-300 text-xs">Tutor</p>
-          </div>
-        </div>
-      </div>
-    </aside>
+
+  <div className="flex items-center gap-3 mb-4">
+
+    <img
+      src= {tutorImg}
+      alt="Javier López"
+      className="w-10 h-10 rounded-full"
+    />
+  
+
+    <div className="text-sm">
+
+      <p className="font-medium">
+        {nombreTutor}
+      </p>
+      <p className="text-blue-300 text-xs">
+        Tutor
+      </p>
+
+    </div>
+
+    
+
+  </div>
+  
+
+  <button
+
+    onClick={() => {
+
+      localStorage.removeItem("logueado");
+
+      localStorage.removeItem("rol");
+
+      window.location.href = "/";
+
+    }}
+
+    className="flex items-center gap-2 text-blue-100 hover:text-white transition"
+
+  >
+
+    <LogOut className="w-5 h-5" />
+
+    <span>Salir</span>
+
+  </button>
+
+</div>
+</aside>
   );
 }
