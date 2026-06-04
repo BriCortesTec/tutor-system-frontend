@@ -1,4 +1,4 @@
-import { Calendar, CheckCircle, Clock, Users, TrendingUp, FileText, Video } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Users, FileText, Video } from 'lucide-react';
 
 export function StudentTutoriasView() {
   const scheduledSessions = [
@@ -66,16 +66,16 @@ export function StudentTutoriasView() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+
       <div>
         <h2 className="font-semibold mb-1">Mis tutorías</h2>
         <p className="text-sm text-gray-600">Gestiona y da seguimiento a tus sesiones de tutoría</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column */}
+
         <div className="lg:col-span-2 space-y-6">
-          {/* Scheduled Sessions */}
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold">Sesiones programadas</h3>
@@ -123,8 +123,9 @@ export function StudentTutoriasView() {
             </div>
           </div>
 
-          {/* Tutorship Status */}
+
           <div className="bg-white rounded-lg shadow-sm">
+
             <div className="p-6 border-b border-gray-200">
               <h3 className="font-semibold">Estado de mis tutorías</h3>
             </div>
@@ -159,9 +160,9 @@ export function StudentTutoriasView() {
           </div>
         </div>
 
-        {/* Right Column */}
+
         <div className="space-y-6">
-          {/* Mini Calendar */}
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="font-semibold mb-4">Mayo 2026</h3>
             <div className="grid grid-cols-7 gap-1">
@@ -194,7 +195,7 @@ export function StudentTutoriasView() {
             </div>
           </div>
 
-          {/* Recent Activities */}
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="font-semibold mb-4">Actividades recientes</h3>
             <div className="space-y-3">

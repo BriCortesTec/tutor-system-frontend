@@ -49,6 +49,10 @@ export default function Login() {
       "nombreTutor",
       data.nombre
     );
+    localStorage.setItem(
+      "idTutor",
+      data.id_tutor
+    );
 
   }
 

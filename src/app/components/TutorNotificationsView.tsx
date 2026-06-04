@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Bell, CheckCircle, AlertCircle, Calendar, Users, FileText, MessageSquare, Clock, Info } from 'lucide-react';
 
 interface Notification {
@@ -10,110 +11,84 @@ interface Notification {
   isImportant: boolean;
   read: boolean;
 }
+interface AvisoAPI {
+  id_aviso: string;
+  titulo: string;
+  descripcion: string;
+  categoria: string;
+  prioridad: string;
+  fecha: string;
+  leido: boolean | string;
+}
+
 
 export function TutorNotificationsView() {
-  const notifications: Notification[] = [
-    {
-      id: 1,
-      type: 'alert',
-      title: 'Estudiante en riesgo',
-      message: 'Ana Laura Gómez requiere seguimiento urgente. Su promedio ha bajado a 7.2',
-      date: '22 mayo 2026',
-      time: '10:30 AM',
-      isImportant: true,
-      read: false
-    },
-    {
-      id: 2,
-      type: 'info',
-      title: 'Nueva tutoría asignada',
-      message: 'Se ha programado una nueva sesión con Carlos Méndez para el 25 de mayo a las 2:00 PM',
-      date: '22 mayo 2026',
-      time: '09:15 AM',
-      isImportant: false,
-      read: false
-    },
-    {
-      id: 3,
-      type: 'warning',
-      title: 'Reporte pendiente',
-      message: 'Tienes 3 reportes de tutoría pendientes de entregar antes del 24 de mayo',
-      date: '21 mayo 2026',
-      time: '04:45 PM',
-      isImportant: true,
-      read: false
-    },
-    {
-      id: 4,
-      type: 'success',
-      title: 'Sesión completada',
-      message: 'La tutoría con Roberto Silva García se ha marcado como completada exitosamente',
-      date: '21 mayo 2026',
-      time: '03:20 PM',
-      isImportant: false,
-      read: true
-    },
-    {
-      id: 5,
-      type: 'info',
-      title: 'Mensaje nuevo',
-      message: 'María Fernández López te ha enviado un mensaje sobre la próxima sesión',
-      date: '21 mayo 2026',
-      time: '11:00 AM',
-      isImportant: false,
-      read: true
-    },
-    {
-      id: 6,
-      type: 'warning',
-      title: 'Cambio de horario',
-      message: 'La sesión del viernes 23 de mayo ha sido reprogramada para el lunes 26 de mayo',
-      date: '20 mayo 2026',
-      time: '02:30 PM',
-      isImportant: true,
-      read: true
-    },
-    {
-      id: 7,
-      type: 'success',
-      title: 'Reporte aprobado',
-      message: 'Tu reporte mensual ha sido aprobado por el coordinador académico',
-      date: '20 mayo 2026',
-      time: '10:00 AM',
-      isImportant: false,
-      read: true
-    },
-    {
-      id: 8,
-      type: 'info',
-      title: 'Recordatorio de sesión',
-      message: 'Tienes una tutoría programada mañana a las 10:00 AM con Laura Hernández',
-      date: '19 mayo 2026',
-      time: '05:00 PM',
-      isImportant: false,
-      read: true
-    },
-    {
-      id: 9,
-      type: 'alert',
-      title: 'Sesión cancelada',
-      message: 'Pedro Sánchez Ruiz ha cancelado la sesión del 20 de mayo',
-      date: '19 mayo 2026',
-      time: '01:15 PM',
-      isImportant: true,
-      read: true
-    },
-    {
-      id: 10,
-      type: 'info',
-      title: 'Actualización de materiales',
-      message: 'Nuevos materiales de estudio disponibles en la biblioteca digital',
-      date: '18 mayo 2026',
-      time: '09:00 AM',
-      isImportant: false,
-      read: true
-    }
-  ];
+  
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  useEffect(() => {
+
+
+  const cargarAvisos = async () => {
+
+    try {
+
+      const idTutor =
+        localStorage.getItem("idTutor");
+
+      const response = await fetch(
+        
+        `http://127.0.0.1/tutores-api/obtener_avisos_tutor.php?id_tutor=${idTutor}`
+      );
+
+      const data: AvisoAPI[] = await response.json();
+      console.log(data);
+      const avisosConvertidos: Notification[] =
+        data.map((aviso) => ({
+
+          id: Number(aviso.id_aviso),
+
+          title: aviso.titulo,
+
+          message: aviso.descripcion,
+
+          date: new Date(aviso.fecha)
+            .toLocaleDateString(),
+
+          time: new Date(aviso.fecha)
+            .toLocaleTimeString(),
+
+          // PostgreSQL devuelve t/f
+          read:
+            aviso.leido === true ||
+            aviso.leido === "t",
+
+          isImportant:
+            aviso.prioridad === "Alta" ||
+            aviso.prioridad === "Importante",
+
+          type:
+            aviso.prioridad === "Alta"
+              ? "alert"
+              : "info"
+
+        }));
+
+        setNotifications(
+          avisosConvertidos
+        );
+
+      } catch(error) {
+
+        console.error(error);
+
+      }
+
+    };
+
+    cargarAvisos();
+
+  }, []);
+
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -160,9 +135,59 @@ export function TutorNotificationsView() {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const importantCount = notifications.filter(n => n.isImportant && !n.read).length;
+  const unreadCount =
+    notifications.filter(
+      n => !n.read
+    ).length;
 
+  const importantCount =
+    notifications.filter(
+      n => n.isImportant
+  ).length;
+  console.log(notifications);
+  
+  const marcarComoLeida = async (
+    
+    idAviso: number
+  ) => {
+    
+    try {
+      
+
+      const formData = new FormData();
+
+      formData.append(
+        "id_aviso",
+        idAviso.toString()
+      );
+      
+      await fetch(
+        
+        "http://127.0.0.1/tutores-api/marcar_aviso_leido.php",
+        {
+          
+          method: "POST",
+          body: formData
+        }
+        
+      )
+      ;
+
+      setNotifications(prev =>
+        prev.map(n =>
+          n.id === idAviso
+            ? { ...n, read: true }
+            : n
+        )
+      );
+
+    } catch(error) {
+
+      console.error(error);
+
+    }
+
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -262,13 +287,16 @@ export function TutorNotificationsView() {
 
                     <div className="flex gap-2">
                       {!notification.read && (
-                        <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                        <button
+                          onClick={() =>
+                            marcarComoLeida(notification.id)
+                          }
+                          className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                        >
                           Marcar como leída
                         </button>
                       )}
-                      <button className="text-xs text-gray-600 hover:text-gray-700">
-                        Ver detalles
-                      </button>
+                    
                     </div>
                   </div>
                 </div>
