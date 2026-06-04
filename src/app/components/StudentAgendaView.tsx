@@ -20,21 +20,147 @@ export function StudentAgendaView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState({ title: '', day: '', time: '', tutor: '', location: '' });
+  const [tutores, setTutores] = useState<any[]>([]);
 
   useEffect(() => {
     localStorage.setItem('agenda-junio-2026', JSON.stringify(events));
   }, [events]);
 
-  const saveEvent = () => {
-    if (editingId) {
-      // Si estamos editando
-      setEvents(events.map(e => e.id === editingId ? { ...e, ...form, day: parseInt(form.day as any) } : e));
-    } else {
-      // Si estamos creando uno nuevo
-      const colors = ['bg-blue-100 text-blue-700 border-blue-300', 'bg-green-100 text-green-700 border-green-300', 'bg-purple-100 text-purple-700 border-purple-300'];
-      setEvents([...events, { id: Date.now(), ...form, day: parseInt(form.day as any), color: colors[events.length % colors.length] }]);
+  useEffect(() => {
+
+  const cargarTutores = async () => {
+    const response = await fetch(
+      "http://127.0.0.1/tutores-api/obtener_tutores.php"
+     );
+
+      const data = await response.json();
+
+      setTutores(data);
+
+    };
+
+    cargarTutores();
+
+  }, []);
+
+  const saveEvent = async () => {
+    
+    alert("Entré a saveEvent");
+    const idAlumno =
+    localStorage.getItem("idAlumno");
+
+  console.log("idAlumno:", idAlumno);
+
+  console.log("Tutor:", form.tutor);
+
+  console.log("Tema:", form.title);
+
+  console.log("Día:", form.day);
+
+  console.log("Hora:", form.time);
+
+  const formData = new FormData();
+
+
+  console.log("Entré a saveEvent");
+
+    
+
+    formData.append(
+      "id_alumno",
+      idAlumno || ""
+    );
+
+    formData.append(
+      "id_tutor",
+      form.tutor
+    );
+
+    formData.append(
+      "tema",
+      form.title
+    );
+
+    formData.append(
+      "fecha",
+      `2026-06-${form.day.padStart(2, "0")} ${form.time}:00`
+    );
+
+    formData.append(
+      "modalidad",
+      "Presencial"
+    );
+
+    formData.append(
+      "lugar",
+      form.location
+    );
+
+    // ===== ENVÍO A PHP =====
+    console.log("Voy a enviar al PHP");
+
+    const response = await fetch(
+  "http://127.0.0.1/tutores-api/guardar_sesion.php",
+  {
+    method: "POST",
+    body: formData
+  }
+);
+
+const texto = await response.text();
+
+console.log(texto);
+
+alert(texto);
+
+return;
+
+    if(!data.success){
+
+      alert("Error al guardar sesión");
+
+      return;
+
     }
+
+    // =======================
+
+    if (editingId) {
+
+      setEvents(
+        events.map(e =>
+          e.id === editingId
+            ? {
+                ...e,
+                ...form,
+                day: parseInt(form.day)
+              }
+            : e
+        )
+      );
+
+    } else {
+
+      const colors = [
+        'bg-blue-100 text-blue-700 border-blue-300',
+        'bg-green-100 text-green-700 border-green-300',
+        'bg-purple-100 text-purple-700 border-purple-300'
+      ];
+
+      setEvents([
+        ...events,
+        {
+          id: Date.now(),
+          ...form,
+          day: parseInt(form.day),
+          color: colors[events.length % colors.length]
+        }
+      ]);
+
+    }
+
     closeModal();
+
   };
 
   const openEdit = (e: AgendaEvent) => {
@@ -50,7 +176,7 @@ export function StudentAgendaView() {
   };
 
   const deleteEvent = (id: number) => setEvents(events.filter(e => e.id !== id));
-
+ 
   return (
     <div className="space-y-6 relative">
       <div className="flex justify-between items-center">
@@ -73,12 +199,51 @@ export function StudentAgendaView() {
             </div>
             <input className="w-full border p-2 rounded" placeholder="Nombre de la asesoría" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
             <input className="w-full border p-2 rounded" type="number" placeholder="Día" value={form.day} onChange={e => setForm({...form, day: e.target.value})} />
-            <input className="w-full border p-2 rounded" placeholder="Hora" value={form.time} onChange={e => setForm({...form, time: e.target.value})} />
-            <input className="w-full border p-2 rounded" placeholder="Maestro" value={form.tutor} onChange={e => setForm({...form, tutor: e.target.value})} />
+            <input
+              type="time"
+              className="w-full border p-2 rounded"
+              value={form.time}
+              onChange={e =>
+                setForm({
+                ...form,
+                time: e.target.value
+               })
+              }
+            />
+
+            <select
+              className="w-full border p-2 rounded"
+              value={form.tutor}
+              onChange={e =>
+                setForm({
+                  ...form,
+                  tutor: e.target.value
+                })
+              }
+              >
+                <option value="">
+                  Selecciona un tutor
+                </option>
+
+                {tutores.map((tutor) => (
+                  <option
+                    key={tutor.id_tutor}
+                    value={tutor.id_tutor}
+                  >
+                    {tutor.nombre}
+                  </option>
+                ))}
+            </select>
             <input className="w-full border p-2 rounded" placeholder="Lugar" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
-            <button onClick={saveEvent} className="w-full bg-blue-600 text-white p-2 rounded">
+            <button
+                onClick={() => {
+                  alert("boton funcionando");
+                  saveEvent();
+                }}
+                className="w-full bg-blue-600 text-white p-2 rounded"
+              >
                 {editingId ? 'Guardar Cambios' : 'Crear Evento'}
-            </button>
+              </button>
           </div>
         </div>
       )}
