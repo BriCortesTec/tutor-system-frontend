@@ -3,6 +3,7 @@ import { Bell, CheckCircle, AlertCircle, Calendar, Users, FileText, MessageSquar
 
 interface Notification {
   id: number;
+  idSesion?: string,
   type: 'success' | 'warning' | 'info' | 'alert';
   title: string;
   message: string;
@@ -19,6 +20,7 @@ interface AvisoAPI {
   prioridad: string;
   fecha: string;
   leido: boolean | string;
+  id_sesion: string;
 }
 
 
@@ -35,6 +37,8 @@ export function TutorNotificationsView() {
       const idTutor =
         localStorage.getItem("idTutor");
 
+        console.log("ID TUTOR:", idTutor);
+
       const response = await fetch(
         
         `http://127.0.0.1/tutores-api/obtener_avisos_tutor.php?id_tutor=${idTutor}`
@@ -42,37 +46,51 @@ export function TutorNotificationsView() {
 
       const data: AvisoAPI[] = await response.json();
       console.log(data);
-      const avisosConvertidos: Notification[] =
-        data.map((aviso) => ({
+const avisosConvertidos: Notification[] =
 
-          id: Number(aviso.id_aviso),
+  data.map((aviso) => {
 
-          title: aviso.titulo,
+    console.log(
+      "ID SESION RECIBIDO:",
+      aviso.id_sesion
+    );
 
-          message: aviso.descripcion,
+    return {
 
-          date: new Date(aviso.fecha)
-            .toLocaleDateString(),
+      id: Number(aviso.id_aviso),
 
-          time: new Date(aviso.fecha)
-            .toLocaleTimeString(),
+      title: aviso.titulo,
 
-          // PostgreSQL devuelve t/f
-          read:
-            aviso.leido === true ||
-            aviso.leido === "t",
+      message: aviso.descripcion,
 
-          isImportant:
-            aviso.prioridad === "Alta" ||
-            aviso.prioridad === "Importante",
+      idSesion: aviso.id_sesion,
 
-          type:
-            aviso.prioridad === "Alta"
-              ? "alert"
-              : "info"
+      date: new Date(aviso.fecha)
+        .toLocaleDateString(),
 
-        }));
+      time: new Date(aviso.fecha)
+        .toLocaleTimeString(),
 
+      read:
+        aviso.leido === true ||
+        aviso.leido === "t",
+
+      isImportant:
+        aviso.prioridad === "Alta" ||
+        aviso.prioridad === "Importante",
+
+      type:
+        aviso.prioridad === "Alta"
+          ? "alert"
+          : "info"
+
+    };
+
+  });
+          console.log(
+            "AVISOS:",
+            avisosConvertidos
+          );
         setNotifications(
           avisosConvertidos
         );
@@ -85,9 +103,11 @@ export function TutorNotificationsView() {
 
     };
 
+
     cargarAvisos();
 
   }, []);
+  
 
 
   const getNotificationIcon = (type: string) => {
@@ -104,6 +124,7 @@ export function TutorNotificationsView() {
         return Bell;
     }
   };
+  
 
   const getNotificationColor = (type: string) => {
     switch (type) {
@@ -188,6 +209,113 @@ export function TutorNotificationsView() {
     }
 
   };
+
+const aceptarSesion = async (
+  idSesion:string,
+  idAviso:number
+) => {
+
+  console.log("ID SESION:", idSesion);
+
+  const formData = new FormData();
+
+  formData.append(
+    "id_sesion",
+    idSesion
+  );
+
+  const response = await fetch(
+    "http://127.0.0.1/tutores-api/aceptar_sesion.php",
+    {
+      method:"POST",
+      body:formData
+    }
+  );
+
+  const data = await response.json();
+
+  console.log("ACEPTAR:", data);
+
+if(data.success){
+
+  setNotifications(prev =>
+    prev.filter(
+      n => n.id !== idAviso
+    )
+  );
+
+}
+
+};
+
+const rechazarSesion = async (
+  idSesion:string,
+  idAviso:number
+) => {
+
+  const formData = new FormData();
+
+  formData.append(
+    "id_sesion",
+    idSesion
+  );
+
+  const response = await fetch(
+    "http://127.0.0.1/tutores-api/eliminar_sesion.php",
+    {
+      method:"POST",
+      body:formData
+    }
+  );
+
+  const data = await response.json();
+
+  console.log("RECHAZAR:", data);
+
+if(data.success){
+
+  setNotifications(prev =>
+    prev.filter(
+      n => n.id !== idAviso
+    )
+  );
+
+}
+
+};
+const marcarTodasLeidas = async () => {
+
+  for(const aviso of notifications){
+
+    if(!aviso.read){
+
+      const formData = new FormData();
+
+      formData.append(
+        "id_aviso",
+        aviso.id.toString()
+      );
+
+      await fetch(
+        "http://127.0.0.1/tutores-api/marcar_aviso_leido.php",
+        {
+          method:"POST",
+          body:formData
+        }
+      );
+
+    }
+
+  }
+
+  setNotifications(prev =>
+    prev.map(n => ({
+      ...n,
+      read:true
+    }))
+  );
+
+};
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -196,9 +324,12 @@ export function TutorNotificationsView() {
           <h2 className="font-semibold mb-1">Centro de notificaciones</h2>
           <p className="text-sm text-gray-600">Mantente al día con tus actividades</p>
         </div>
-        <button className="px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
-          Marcar todas como leídas
-        </button>
+<button
+  onClick={marcarTodasLeidas}
+  className="px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg"
+>
+  Marcar todas como leídas
+</button>
       </div>
 
       {/* Stats */}
@@ -284,6 +415,49 @@ export function TutorNotificationsView() {
                     </div>
 
                     <p className="text-sm text-gray-700 mb-3">{notification.message}</p>
+                    {notification.title ===
+                      "Nueva solicitud de tutoría" &&
+                      !notification.read && (
+
+                      <div className="flex gap-2 mt-3">
+
+                      <button
+                        onClick={() => {
+
+                          console.log("CLICK ACEPTAR");
+
+                          notification.idSesion &&
+                          aceptarSesion(
+                            notification.idSesion,
+                            notification.id
+                          );
+
+                        }}
+                        className="bg-green-600 text-white px-3 py-1 rounded text-xs"
+                      >
+                        Aceptar
+                      </button>
+
+                      <button
+                        onClick={() => {
+
+                          console.log("CLICK RECHAZAR");
+
+                          notification.idSesion &&
+                          rechazarSesion(
+                            notification.idSesion,
+                            notification.id
+                          );
+
+                        }}
+                        className="bg-red-600 text-white px-3 py-1 rounded text-xs"
+                      >
+                        Rechazar
+                      </button>
+
+                      </div>
+
+                    )}
 
                     <div className="flex gap-2">
                       {!notification.read && (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Clock, Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TimeSlot {
@@ -22,32 +22,109 @@ function toYMD(date: Date): string {
 }
 
 export function ScheduleView() {
+
   const today = new Date();
 
-  const [currentYear, setCurrentYear]   = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [selectedDate, setSelectedDate] = useState<string>(toYMD(today));
+  const [schedules, setSchedules] =
+    useState<TimeSlot[]>([]);
 
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingSlot, setEditingSlot]   = useState<TimeSlot | null>(null);
-  const [startTime, setStartTime]       = useState('');
-  const [endTime, setEndTime]           = useState('');
-  const [location, setLocation]         = useState('');
+  const [currentYear, setCurrentYear] =
+    useState(today.getFullYear());
 
+  const [currentMonth, setCurrentMonth] =
+    useState(today.getMonth());
+
+  const [selectedDate, setSelectedDate] =
+    useState(toYMD(today));
+
+  const [showAddModal, setShowAddModal] =
+    useState(false);
+
+  const [editingSlot, setEditingSlot] =
+    useState<TimeSlot | null>(null);
+
+  const [startTime, setStartTime] =
+    useState('');
+
+  const [endTime, setEndTime] =
+    useState('');
+
+  const [location, setLocation] =
+    useState('');
+
+  useEffect(() => {
+
+    cargarHorarios();
+
+  }, []);
+
+  const cargarHorarios = async () => {
+
+    try {
+
+      const idTutor =
+        localStorage.getItem("idTutor");
+
+      console.log(
+        "ID TUTOR:",
+        idTutor
+      );
+
+      const response = await fetch(
+        `http://127.0.0.1/tutores-api/obtener_horarios_tutor.php?id_tutor=${idTutor}`
+      );
+
+      const data =
+        await response.json();
+
+      console.log(
+        "HORARIOS:",
+        data
+      );
+
+      const horariosConvertidos =
+        data.map((s:any) => ({
+
+          id: Number(s.id_sesion),
+
+          date: s.fecha,
+
+          startTime: s.hora,
+
+          endTime: s.hora,
+
+          location: s.lugar,
+
+          type: "ocupado",
+
+          studentName:
+            s.nombre_alumno ||
+
+            s.alumno ||
+
+            "Alumno"
+
+        }));
+
+      setSchedules(
+        horariosConvertidos
+      );
+
+    } catch(error) {
+
+      console.error(
+        "ERROR CARGANDO HORARIOS:",
+        error
+      );
+
+    }
+
+  };
   const timeSlots = [
     '07:00','08:00','09:00','10:00','11:00','12:00',
     '13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'
   ];
 
-  const [schedules, setSchedules] = useState<TimeSlot[]>([
-    { id: 1, date: toYMD(today), startTime: '10:00', endTime: '12:00', location: 'Aula 301', type: 'disponible' },
-    { id: 2, date: toYMD(today), startTime: '14:00', endTime: '16:00', location: 'Virtual',  type: 'ocupado', studentName: 'Ana Laura Gómez' },
-    {
-      id: 3,
-      date: toYMD(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2)),
-      startTime: '09:00', endTime: '11:00', location: 'Aula 205', type: 'disponible'
-    },
-  ]);
 
   // ── Navegación de mes ──────────────────────────────────────────────────────
   const prevMonth = () => {
@@ -122,15 +199,9 @@ export function ScheduleView() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-semibold mb-1">Mis horarios</h2>
-          <p className="text-sm text-gray-600">Gestiona tu disponibilidad para tutorías</p>
+          
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >
-          <Plus className="w-4 h-4" />
-          Agregar disponibilidad
-        </button>
+        
       </div>
 
       {/* Stats */}

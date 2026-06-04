@@ -35,14 +35,10 @@ export function CompletedSessionsView() {
 
   // ── Formulario inline ──────────────────────────────────────────────────────
   const [sessions, setSessions] = useState<Session[]>([
-    { id: 1, date: '22 mayo 2026', time: '10:00', student: 'Ana Laura Gómez',     topic: 'Cálculo diferencial - Derivadas',        observations: 'La estudiante muestra dificultad en derivadas parciales. Se recomienda práctica adicional.', status: 'Completada', duration: '1.5 horas', location: 'Aula 301',  materials: ['Ejercicios de práctica', 'Guía de derivadas'] },
-    { id: 2, date: '21 mayo 2026', time: '14:00', student: 'Carlos Méndez Ruiz',  topic: 'Álgebra lineal - Matrices',              observations: 'Excelente progreso. El estudiante comprendió operaciones con matrices.',                       status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Presentación PPT', 'Ejercicios resueltos'] },
-    { id: 3, date: '20 mayo 2026', time: '11:00', student: 'María Fernández López',topic: 'Física I - Cinemática',                  observations: 'Sesión cancelada por el estudiante. Se reprogramó para la próxima semana.',                    status: 'Cancelada',  duration: '1 hora',    location: 'Aula 205',  materials: [] },
-    { id: 4, date: '19 mayo 2026', time: '09:00', student: 'Roberto Silva García', topic: 'Programación - Estructuras de datos',   observations: 'Se cubrieron listas enlazadas y árboles binarios con implementación en Python.',               status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Código fuente', 'Documentación técnica'] },
-    { id: 5, date: '18 mayo 2026', time: '16:00', student: 'Laura Hernández Cruz', topic: 'Química orgánica - Nomenclatura',       observations: 'Buena comprensión de nomenclatura básica. Se requiere refuerzo en compuestos complejos.',       status: 'Completada', duration: '1 hora',    location: 'Aula 301',  materials: ['Tabla de nomenclatura', 'Ejercicios prácticos'] },
-    { id: 6, date: '17 mayo 2026', time: '08:00', student: 'Pedro Sánchez Ruiz',   topic: 'Matemáticas básicas - Álgebra',        observations: 'Estudiante no asistió a la sesión.',                                                          status: 'Cancelada',  duration: '1 hora',    location: 'Aula 205',  materials: [] },
-    { id: 7, date: '16 mayo 2026', time: '15:00', student: 'Diana Morales Torres', topic: 'Estadística - Probabilidad',            observations: 'La estudiante logró resolver problemas de probabilidad condicional.',                          status: 'Completada', duration: '1.5 horas', location: 'Virtual',   materials: ['Ejercicios de probabilidad', 'Formulario'] },
-    { id: 8, date: '15 mayo 2026', time: '10:00', student: 'Miguel Ángel Vargas',  topic: 'Mecánica - Dinámica',                  observations: 'El estudiante resolvió problemas de segunda ley de Newton sin dificultad.',                     status: 'Completada', duration: '2 horas',   location: 'Aula 301',  materials: ['Problemas resueltos', 'Simulaciones'] },
+    { id: 1, date: '29 mayo 2026', time: '10:00', student: 'Ana Laura Gómez',     topic: 'Cálculo diferencial - Derivadas',        observations: 'La estudiante muestra dificultad en derivadas parciales. Se recomienda práctica adicional.', status: 'Completada', duration: '1.5 horas', location: 'Aula 301',  materials: ['Ejercicios de práctica', 'Guía de derivadas'] },
+    { id: 2, date: '26 mayo 2026', time: '14:00', student: 'Carlos Méndez Ruiz',  topic: 'Álgebra lineal - Matrices',              observations: 'Excelente progreso. El estudiante comprendió operaciones con matrices.',                       status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Presentación PPT', 'Ejercicios resueltos'] },
+    { id: 3, date: '25 mayo 2026', time: '11:00', student: 'María Fernández López',topic: 'Física I - Cinemática',                  observations: 'Sesión cancelada por el estudiante. Se reprogramó para la próxima semana.',                    status: 'Cancelada',  duration: '1 hora',    location: 'Aula 205',  materials: [] },
+    { id: 4, date: '20 mayo 2026', time: '09:00', student: 'Roberto Silva García', topic: 'Programación - Estructuras de datos',   observations: 'Se cubrieron listas enlazadas y árboles binarios con implementación en Python.',               status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Código fuente', 'Documentación técnica'] },
   ]);
 
   const [formFecha,   setFormFecha]   = useState(new Date().toISOString().split('T')[0]);
@@ -129,7 +125,7 @@ export function CompletedSessionsView() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="font-semibold mb-1">Sesiones realizadas</h2>
+          <h2 className="font-semibold mb-1">Sesiones </h2>
           <p className="text-sm text-gray-600">Historial y registro de tutorías</p>
         </div>
         <span className="text-sm text-gray-600">
