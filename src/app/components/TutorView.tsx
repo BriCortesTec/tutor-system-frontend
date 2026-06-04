@@ -30,7 +30,7 @@ export function TutorView({ onSectionChange }: Props) {
   ];
 
   const quickActions = [
-    { label: 'Mis estudiantes', icon: '👨‍🎓', color: 'bg-blue-50 text-blue-600',   section: 'mis-estudiantes' },
+    { label: 'Mis tutorados', icon: '👨‍🎓', color: 'bg-blue-50 text-blue-600',   section: 'mis-estudiantes' },
     { label: 'Mensajes',        icon: '💬', color: 'bg-green-50 text-green-600',  section: 'mensajes' },
     { label: 'Ver calendario',  icon: '📅', color: 'bg-purple-50 text-purple-600', section: 'horarios' },
     { label: 'Sesiones',        icon: '📋', color: 'bg-orange-50 text-orange-600', section: 'sesiones-realizadas' },
@@ -46,7 +46,7 @@ export function TutorView({ onSectionChange }: Props) {
 
   // Stats redirigen a su sección
   const stats = [
-    { label: 'Mis estudiantes',      value: '16', icon: Users,         bg: 'bg-blue-50',   color: 'text-blue-600',   section: 'mis-estudiantes' },
+    { label: 'Mis tutorados',      value: '16', icon: Users,         bg: 'bg-blue-50',   color: 'text-blue-600',   section: 'mis-estudiantes' },
     { label: 'Tutorías realizadas',  value: '28', icon: CheckCircle,   bg: 'bg-green-50',  color: 'text-green-600',  section: 'sesiones-realizadas' },
     { label: 'Reportes pendientes',  value: '22', icon: FileText,      bg: 'bg-orange-50', color: 'text-orange-600', section: 'reportes' },
     { label: 'Sesiones programadas', value: '5',  icon: Calendar,      bg: 'bg-purple-50', color: 'text-purple-600', section: 'horarios' }
@@ -81,10 +81,10 @@ export function TutorView({ onSectionChange }: Props) {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
 
-          {/* Mis estudiantes */}
+          {/* Mis tutorados */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold">Mis estudiantes</h3>
+              <h3 className="font-semibold">Mis tutorados</h3>
               <button
                 onClick={() => onSectionChange('mis-estudiantes')}
                 className="text-blue-600 text-sm hover:underline"

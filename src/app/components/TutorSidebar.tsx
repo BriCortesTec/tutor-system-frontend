@@ -10,7 +10,7 @@ interface TutorSidebarProps {
 export function TutorSidebar({ activeSection, onSectionChange, nombreTutor }: TutorSidebarProps) {
   const menuItems = [
     { id: 'inicio', label: 'Inicio', icon: Home },
-    { id: 'mis-estudiantes', label: 'Mis estudiantes', icon: Users },
+    { id: 'mis-estudiantes', label: 'Mis tutorados', icon: Users },
     { id: 'horarios', label: 'Horarios', icon: Calendar },
     { id: 'sesiones-realizadas', label: 'Sesiones realizadas', icon: BookOpen },
     { id: 'reportes', label: 'Reportes', icon: FileText },

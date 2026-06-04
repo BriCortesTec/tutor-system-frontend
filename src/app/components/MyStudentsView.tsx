@@ -16,7 +16,8 @@ interface Student {
   career: string;
   semester: string;
   average: number;
-  status: 'Alto' | 'Medio' | 'Bajo';
+  riesgo: 'Alto' | 'Medio' | 'Bajo';
+  condicion: string;
   email: string;
   phone: string;
   tutoringSessions: number;
@@ -41,14 +42,14 @@ export function MyStudentsView() {
   const idTutor = localStorage.getItem('idTutor') || 'TUT1';
 
   const students: Student[] = [
-    { id: 1, name: 'Ana Laura Gómez',    career: 'Ingeniería en Software', semester: '4to Semestre', average: 7.2, status: 'Bajo',  email: 'ana.gomez@universidad.edu',      phone: '555-0101', tutoringSessions: 8,  lastSession: '15 mayo 2026' },
-    { id: 2, name: 'Carlos Méndez Ruiz', career: 'Ingeniería Industrial',  semester: '5to Semestre', average: 8.1, status: 'Medio', email: 'carlos.mendez@universidad.edu',  phone: '555-0102', tutoringSessions: 12, lastSession: '18 mayo 2026' },
-    { id: 3, name: 'María Fernández López', career: 'Arquitectura',        semester: '3er Semestre', average: 8.5, status: 'Medio', email: 'maria.fernandez@universidad.edu', phone: '555-0103', tutoringSessions: 6,  lastSession: '20 mayo 2026' },
-    { id: 4, name: 'Roberto Silva García', career: 'Diseño Gráfico',       semester: '6to Semestre', average: 9.2, status: 'Alto',  email: 'roberto.silva@universidad.edu',  phone: '555-0104', tutoringSessions: 15, lastSession: '22 mayo 2026' },
-    { id: 5, name: 'Laura Hernández Cruz', career: 'Ingeniería en Software', semester: '4to Semestre', average: 9.0, status: 'Alto', email: 'laura.hernandez@universidad.edu', phone: '555-0105', tutoringSessions: 10, lastSession: '21 mayo 2026' },
-    { id: 6, name: 'Pedro Sánchez Ruiz',  career: 'Ingeniería Civil',      semester: '5to Semestre', average: 7.5, status: 'Bajo',  email: 'pedro.sanchez@universidad.edu',  phone: '555-0106', tutoringSessions: 9,  lastSession: '19 mayo 2026' },
-    { id: 7, name: 'Diana Morales Torres', career: 'Administración',       semester: '3er Semestre', average: 8.3, status: 'Medio', email: 'diana.morales@universidad.edu',  phone: '555-0107', tutoringSessions: 7,  lastSession: '17 mayo 2026' },
-    { id: 8, name: 'Miguel Ángel Vargas', career: 'Ingeniería Mecánica',   semester: '6to Semestre', average: 8.8, status: 'Alto',  email: 'miguel.vargas@universidad.edu',  phone: '555-0108', tutoringSessions: 14, lastSession: '23 mayo 2026' },
+    { id: 1, name: 'Ana Laura Gómez',       career: 'Ingeniería en Software', semester: '4to Semestre', average: 7.2, riesgo: 'Bajo',  condicion: 'Materias en curso normal',                                              email: 'ana.gomez@universidad.edu',      phone: '555-0101', tutoringSessions: 8,  lastSession: '15 mayo 2026' },
+    { id: 2, name: 'Carlos Méndez Ruiz',    career: 'Ingeniería Industrial',  semester: '5to Semestre', average: 8.1, riesgo: 'Medio', condicion: 'Materias en repetición',                                                email: 'carlos.mendez@universidad.edu',  phone: '555-0102', tutoringSessions: 12, lastSession: '18 mayo 2026' },
+    { id: 3, name: 'María Fernández López', career: 'Arquitectura',           semester: '3er Semestre', average: 8.5, riesgo: 'Medio', condicion: '2 materias reprobadas',                                                 email: 'maria.fernandez@universidad.edu',phone: '555-0103', tutoringSessions: 6,  lastSession: '20 mayo 2026' },
+    { id: 4, name: 'Roberto Silva García',  career: 'Diseño Gráfico',         semester: '6to Semestre', average: 9.2, riesgo: 'Alto',  condicion: 'Materia en segundo recurso / especial',                                 email: 'roberto.silva@universidad.edu',  phone: '555-0104', tutoringSessions: 15, lastSession: '22 mayo 2026' },
+    { id: 5, name: 'Laura Hernández Cruz',  career: 'Ingeniería en Software', semester: '4to Semestre', average: 9.0, riesgo: 'Alto',  condicion: 'Más de dos materias reprobadas',                                        email: 'laura.hernandez@universidad.edu',phone: '555-0105', tutoringSessions: 10, lastSession: '21 mayo 2026' },
+    { id: 6, name: 'Pedro Sánchez Ruiz',    career: 'Ingeniería Civil',       semester: '5to Semestre', average: 7.5, riesgo: 'Bajo',  condicion: 'Materias en curso normal',                                              email: 'pedro.sanchez@universidad.edu',  phone: '555-0106', tutoringSessions: 9,  lastSession: '19 mayo 2026' },
+    { id: 7, name: 'Diana Morales Torres',  career: 'Administración',         semester: '3er Semestre', average: 8.3, riesgo: 'Medio', condicion: 'Materias en repetición y 1 materia reprobada',                          email: 'diana.morales@universidad.edu',  phone: '555-0107', tutoringSessions: 7,  lastSession: '17 mayo 2026' },
+    { id: 8, name: 'Miguel Ángel Vargas',   career: 'Ingeniería Mecánica',    semester: '6to Semestre', average: 8.8, riesgo: 'Alto',  condicion: 'Materia en segundo recurso / especial y más de dos materias reprobadas', email: 'miguel.vargas@universidad.edu',  phone: '555-0108', tutoringSessions: 14, lastSession: '23 mayo 2026' },
   ];
 
   const tutoringHistory = [
@@ -64,11 +65,11 @@ export function MyStudentsView() {
     { date: '3 mayo 2026',  type: 'Nota',     text: 'Estudiante interesado en proyectos extracurriculares de programación.', priority: 'normal' },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Alto':  return 'bg-green-100 text-green-700';
+  const getRiesgoColor = (riesgo: string) => {
+    switch (riesgo) {
+      case 'Bajo':  return 'bg-green-100 text-green-700';
       case 'Medio': return 'bg-yellow-100 text-yellow-700';
-      case 'Bajo':  return 'bg-red-100 text-red-700';
+      case 'Alto':  return 'bg-red-100 text-red-700';
       default:      return 'bg-gray-100 text-gray-700';
     }
   };
@@ -82,7 +83,7 @@ export function MyStudentsView() {
   const filteredStudents = students.filter(s => {
     const matchSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         s.career.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchFilter = filterStatus === 'Todos' || s.status === filterStatus;
+    const matchFilter = filterStatus === 'Todos' || s.riesgo === filterStatus;
     return matchSearch && matchFilter;
   });
 
@@ -129,7 +130,7 @@ export function MyStudentsView() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="font-semibold mb-1">Mis estudiantes</h2>
+          <h2 className="font-semibold mb-1">Mis tutorados</h2>
           <p className="text-sm text-gray-600">Gestiona y da seguimiento a tus estudiantes</p>
         </div>
         <span className="text-sm text-gray-600">
@@ -176,7 +177,7 @@ export function MyStudentsView() {
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Carrera</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Semestre</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Promedio</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estado</th>
+                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Riesgo académico</th>
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Acciones</th>
               </tr>
             </thead>
@@ -202,9 +203,12 @@ export function MyStudentsView() {
                     </span>
                   </td>
                   <td className="py-4 px-6">
-                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(student.status)}`}>
-                      {student.status}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className={`text-xs px-3 py-1 rounded-full font-medium w-fit ${getRiesgoColor(student.riesgo)}`}>
+                        {student.riesgo}
+                      </span>
+                      <span className="text-xs text-gray-500">{student.condicion}</span>
+                    </div>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex gap-2">
@@ -251,9 +255,10 @@ export function MyStudentsView() {
                   <h3 className="font-semibold mb-1">{selectedStudent.name}</h3>
                   <p className="text-sm text-gray-600">{selectedStudent.career}</p>
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
-                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(selectedStudent.status)}`}>
-                      {selectedStudent.status}
-                    </span>
+                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${getRiesgoColor(selectedStudent.riesgo)}`}>
+                        Riesgo {selectedStudent.riesgo}
+                      </span>
+                      <span className="text-xs text-gray-500 italic">{selectedStudent.condicion}</span>
                     <span className="text-sm text-gray-600">
                       Promedio: <span className={`font-semibold ${getAverageColor(selectedStudent.average)}`}>
                         {selectedStudent.average.toFixed(1)}
