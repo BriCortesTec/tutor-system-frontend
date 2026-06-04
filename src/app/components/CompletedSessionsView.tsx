@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { Search, Filter, Eye, Calendar, X, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
+import { Search, Filter, Eye, Calendar, X, CheckCircle, XCircle, Clock, FileText, Plus, Loader2, User } from 'lucide-react';
+
+const API_BASE = 'http://127.0.0.1/tutores-api';
 
 interface Session {
   id: number;
   date: string;
+  time: string;
   student: string;
   topic: string;
   observations: string;
@@ -13,120 +16,113 @@ interface Session {
   materials: string[];
 }
 
+const STUDENTS = [
+  'Ana Laura Gómez',
+  'Carlos Méndez Ruiz',
+  'María Fernández López',
+  'Roberto Silva García',
+  'Laura Hernández Cruz',
+  'Pedro Sánchez Ruiz',
+  'Diana Morales Torres',
+  'Miguel Ángel Vargas',
+];
+
 export function CompletedSessionsView() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState<string>('Todas');
-  const [filterDate, setFilterDate] = useState('');
+  const [searchQuery, setSearchQuery]   = useState('');
+  const [filterStatus, setFilterStatus] = useState('Todas');
+  const [filterDate, setFilterDate]     = useState('');
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
-  const sessions: Session[] = [
-    {
-      id: 1,
-      date: '22 mayo 2026',
-      student: 'Ana Laura Gómez',
-      topic: 'Cálculo diferencial - Derivadas',
-      observations: 'La estudiante muestra dificultad en derivadas parciales. Se recomienda práctica adicional con ejercicios de aplicación.',
-      status: 'Completada',
-      duration: '1.5 horas',
-      location: 'Aula 301',
-      materials: ['Ejercicios de práctica', 'Guía de derivadas']
-    },
-    {
-      id: 2,
-      date: '21 mayo 2026',
-      student: 'Carlos Méndez Ruiz',
-      topic: 'Álgebra lineal - Matrices',
-      observations: 'Excelente progreso. El estudiante comprendió operaciones con matrices y sistemas de ecuaciones.',
-      status: 'Completada',
-      duration: '2 horas',
-      location: 'Virtual',
-      materials: ['Presentación PPT', 'Ejercicios resueltos']
-    },
-    {
-      id: 3,
-      date: '20 mayo 2026',
-      student: 'María Fernández López',
-      topic: 'Física I - Cinemática',
-      observations: 'Sesión cancelada por el estudiante. Se reprogramó para la próxima semana.',
-      status: 'Cancelada',
-      duration: '1 hora',
-      location: 'Aula 205',
-      materials: []
-    },
-    {
-      id: 4,
-      date: '19 mayo 2026',
-      student: 'Roberto Silva García',
-      topic: 'Programación - Estructuras de datos',
-      observations: 'Estudiante avanzado. Se cubrieron listas enlazadas y árboles binarios con implementación en Python.',
-      status: 'Completada',
-      duration: '2 horas',
-      location: 'Virtual',
-      materials: ['Código fuente', 'Documentación técnica']
-    },
-    {
-      id: 5,
-      date: '18 mayo 2026',
-      student: 'Laura Hernández Cruz',
-      topic: 'Química orgánica - Nomenclatura',
-      observations: 'Buena comprensión de nomenclatura básica. Se requiere refuerzo en compuestos complejos.',
-      status: 'Completada',
-      duration: '1 hora',
-      location: 'Aula 301',
-      materials: ['Tabla de nomenclatura', 'Ejercicios prácticos']
-    },
-    {
-      id: 6,
-      date: '17 mayo 2026',
-      student: 'Pedro Sánchez Ruiz',
-      topic: 'Matemáticas básicas - Álgebra',
-      observations: 'Estudiante no asistió a la sesión. Se intentó contactar sin éxito.',
-      status: 'Cancelada',
-      duration: '1 hora',
-      location: 'Aula 205',
-      materials: []
-    },
-    {
-      id: 7,
-      date: '16 mayo 2026',
-      student: 'Diana Morales Torres',
-      topic: 'Estadística - Probabilidad',
-      observations: 'Sesión productiva. La estudiante logró resolver problemas de probabilidad condicional.',
-      status: 'Completada',
-      duration: '1.5 horas',
-      location: 'Virtual',
-      materials: ['Ejercicios de probabilidad', 'Formulario']
-    },
-    {
-      id: 8,
-      date: '15 mayo 2026',
-      student: 'Miguel Ángel Vargas',
-      topic: 'Mecánica - Dinámica',
-      observations: 'Excelente desempeño. El estudiante resolvió problemas de segunda ley de Newton sin dificultad.',
-      status: 'Completada',
-      duration: '2 horas',
-      location: 'Aula 301',
-      materials: ['Problemas resueltos', 'Simulaciones']
-    }
-  ];
+  // ── Formulario inline ──────────────────────────────────────────────────────
+  const [sessions, setSessions] = useState<Session[]>([
+    { id: 1, date: '22 mayo 2026', time: '10:00', student: 'Ana Laura Gómez',     topic: 'Cálculo diferencial - Derivadas',        observations: 'La estudiante muestra dificultad en derivadas parciales. Se recomienda práctica adicional.', status: 'Completada', duration: '1.5 horas', location: 'Aula 301',  materials: ['Ejercicios de práctica', 'Guía de derivadas'] },
+    { id: 2, date: '21 mayo 2026', time: '14:00', student: 'Carlos Méndez Ruiz',  topic: 'Álgebra lineal - Matrices',              observations: 'Excelente progreso. El estudiante comprendió operaciones con matrices.',                       status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Presentación PPT', 'Ejercicios resueltos'] },
+    { id: 3, date: '20 mayo 2026', time: '11:00', student: 'María Fernández López',topic: 'Física I - Cinemática',                  observations: 'Sesión cancelada por el estudiante. Se reprogramó para la próxima semana.',                    status: 'Cancelada',  duration: '1 hora',    location: 'Aula 205',  materials: [] },
+    { id: 4, date: '19 mayo 2026', time: '09:00', student: 'Roberto Silva García', topic: 'Programación - Estructuras de datos',   observations: 'Se cubrieron listas enlazadas y árboles binarios con implementación en Python.',               status: 'Completada', duration: '2 horas',   location: 'Virtual',   materials: ['Código fuente', 'Documentación técnica'] },
+    { id: 5, date: '18 mayo 2026', time: '16:00', student: 'Laura Hernández Cruz', topic: 'Química orgánica - Nomenclatura',       observations: 'Buena comprensión de nomenclatura básica. Se requiere refuerzo en compuestos complejos.',       status: 'Completada', duration: '1 hora',    location: 'Aula 301',  materials: ['Tabla de nomenclatura', 'Ejercicios prácticos'] },
+    { id: 6, date: '17 mayo 2026', time: '08:00', student: 'Pedro Sánchez Ruiz',   topic: 'Matemáticas básicas - Álgebra',        observations: 'Estudiante no asistió a la sesión.',                                                          status: 'Cancelada',  duration: '1 hora',    location: 'Aula 205',  materials: [] },
+    { id: 7, date: '16 mayo 2026', time: '15:00', student: 'Diana Morales Torres', topic: 'Estadística - Probabilidad',            observations: 'La estudiante logró resolver problemas de probabilidad condicional.',                          status: 'Completada', duration: '1.5 horas', location: 'Virtual',   materials: ['Ejercicios de probabilidad', 'Formulario'] },
+    { id: 8, date: '15 mayo 2026', time: '10:00', student: 'Miguel Ángel Vargas',  topic: 'Mecánica - Dinámica',                  observations: 'El estudiante resolvió problemas de segunda ley de Newton sin dificultad.',                     status: 'Completada', duration: '2 horas',   location: 'Aula 301',  materials: ['Problemas resueltos', 'Simulaciones'] },
+  ]);
 
-  const getStatusColor = (status: string) => {
-    return status === 'Completada'
-      ? 'bg-green-100 text-green-700'
-      : 'bg-red-100 text-red-700';
-  };
+  const [formFecha,   setFormFecha]   = useState(new Date().toISOString().split('T')[0]);
+  const [formHora,    setFormHora]    = useState('09:00');
+  const [formAlumno,  setFormAlumno]  = useState('');
+  const [formTema,    setFormTema]    = useState('');
+  const [formObs,     setFormObs]     = useState('');
+  const [formLugar,   setFormLugar]   = useState('');
+  const [guardando,   setGuardando]   = useState(false);
+  const [exito,       setExito]       = useState(false);
+  const [formError,   setFormError]   = useState('');
 
-  const getStatusIcon = (status: string) => {
-    return status === 'Completada' ? CheckCircle : XCircle;
-  };
+  const idTutor = localStorage.getItem('idTutor') || '';
 
-  const filteredSessions = sessions.filter(session => {
-    const matchesSearch = session.student.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         session.topic.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'Todas' || session.status === filterStatus;
-    const matchesDate = !filterDate || session.date.includes(filterDate);
-    return matchesSearch && matchesStatus && matchesDate;
+  const getStatusColor = (s: string) =>
+    s === 'Completada' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+  const getStatusIcon = (s: string) =>
+    s === 'Completada' ? CheckCircle : XCircle;
+
+  const filteredSessions = sessions.filter(s => {
+    const matchSearch = s.student.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        s.topic.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchStatus = filterStatus === 'Todas' || s.status === filterStatus;
+    const matchDate   = !filterDate || s.date.includes(filterDate);
+    return matchSearch && matchStatus && matchDate;
   });
+
+  // ── Guardar sesión ─────────────────────────────────────────────────────────
+  const handleRegistrar = async () => {
+    if (!formAlumno) { setFormError('Selecciona un alumno.'); return; }
+    if (!formTema.trim()) { setFormError('El tema es obligatorio.'); return; }
+    if (!formFecha)   { setFormError('La fecha es obligatoria.'); return; }
+
+    setGuardando(true);
+    setFormError('');
+    try {
+      const res = await fetch(`${API_BASE}/registrar_sesion.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_tutor: idTutor,
+          tema:     formTema,
+          fecha:    formFecha,
+          hora:     formHora,
+          alumno:   formAlumno,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Agregar a la lista local inmediatamente
+        const nueva: Session = {
+          id:           Date.now(),
+          date:         new Date(formFecha + 'T00:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }),
+          time:         formHora,
+          student:      formAlumno,
+          topic:        formTema,
+          observations: formObs,
+          status:       'Completada',
+          duration:     '1 hora',
+          location:     formLugar || 'Por definir',
+          materials:    [],
+        };
+        setSessions(prev => [nueva, ...prev]);
+        setExito(true);
+        setFormFecha(new Date().toISOString().split('T')[0]);
+        setFormHora('09:00');
+        setFormAlumno('');
+        setFormTema('');
+        setFormObs('');
+        setFormLugar('');
+        setTimeout(() => setExito(false), 3000);
+      } else {
+        setFormError('Error al guardar: ' + (data.error || 'intenta de nuevo.'));
+      }
+    } catch {
+      setFormError('No se pudo conectar con el servidor.');
+    } finally {
+      setGuardando(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -134,186 +130,284 @@ export function CompletedSessionsView() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-semibold mb-1">Sesiones realizadas</h2>
-          <p className="text-sm text-gray-600">Historial completo de tutorías</p>
+          <p className="text-sm text-gray-600">Historial y registro de tutorías</p>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600">
-            Total: <span className="font-semibold">{sessions.length}</span> sesiones
-          </span>
-        </div>
+        <span className="text-sm text-gray-600">
+          Total: <span className="font-semibold">{sessions.length}</span> sesiones
+        </span>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="bg-green-50 p-3 rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            </div>
+            <div className="bg-green-50 p-3 rounded-lg"><CheckCircle className="w-5 h-5 text-green-600" /></div>
             <div>
-              <p className="text-sm text-gray-600">Sesiones completadas</p>
-              <p className="font-semibold">
-                {sessions.filter(s => s.status === 'Completada').length}
-              </p>
+              <p className="text-sm text-gray-600">Completadas</p>
+              <p className="font-semibold">{sessions.filter(s => s.status === 'Completada').length}</p>
             </div>
           </div>
         </div>
-
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="bg-red-50 p-3 rounded-lg">
-              <XCircle className="w-5 h-5 text-red-600" />
-            </div>
+            <div className="bg-red-50 p-3 rounded-lg"><XCircle className="w-5 h-5 text-red-600" /></div>
             <div>
-              <p className="text-sm text-gray-600">Sesiones canceladas</p>
-              <p className="font-semibold">
-                {sessions.filter(s => s.status === 'Cancelada').length}
-              </p>
+              <p className="text-sm text-gray-600">Canceladas</p>
+              <p className="font-semibold">{sessions.filter(s => s.status === 'Cancelada').length}</p>
             </div>
           </div>
         </div>
-
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <Clock className="w-5 h-5 text-blue-600" />
-            </div>
+            <div className="bg-blue-50 p-3 rounded-lg"><Clock className="w-5 h-5 text-blue-600" /></div>
             <div>
               <p className="text-sm text-gray-600">Horas totales</p>
-              <p className="font-semibold">
-                {sessions.reduce((acc, s) => acc + parseFloat(s.duration), 0).toFixed(1)}h
-              </p>
+              <p className="font-semibold">{sessions.reduce((acc, s) => acc + parseFloat(s.duration), 0).toFixed(1)}h</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Buscar por estudiante o tema..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-gray-600" />
-            <input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option>Todas</option>
-              <option>Completada</option>
-              <option>Cancelada</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      {/* ── Layout principal: lista + formulario lado a lado ────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* Sessions Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Fecha</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estudiante</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Tema</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Duración</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Estado</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSessions.map((session) => {
-                const StatusIcon = getStatusIcon(session.status);
-                return (
-                  <tr key={session.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-4 px-6 text-sm text-gray-700">{session.date}</td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-                          {session.student.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                        </div>
-                        <span className="text-sm font-medium">{session.student}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-sm text-gray-700">{session.topic}</td>
-                    <td className="py-4 px-6 text-sm text-gray-600">{session.duration}</td>
-                    <td className="py-4 px-6">
-                      <span className={`text-xs px-3 py-1 rounded-full font-medium flex items-center gap-1 w-fit ${getStatusColor(session.status)}`}>
-                        <StatusIcon className="w-3 h-3" />
-                        {session.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <button
-                        onClick={() => setSelectedSession(session)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm"
-                      >
-                        <Eye className="w-4 h-4" />
-                        Ver detalle
-                      </button>
-                    </td>
+        {/* Lista de sesiones (2/3) */}
+        <div className="lg:col-span-2 space-y-4">
+          {/* Filtros */}
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 relative">
+                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Buscar por estudiante o tema..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+              </div>
+              <input
+                type="date"
+                value={filterDate}
+                onChange={e => setFilterDate(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+              <select
+                value={filterStatus}
+                onChange={e => setFilterStatus(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              >
+                <option>Todas</option>
+                <option>Completada</option>
+                <option>Cancelada</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tabla */}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-700">Fecha / Hora</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-700">Alumno</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-700">Tema</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-700">Estado</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-700"></th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {filteredSessions.map(session => {
+                    const StatusIcon = getStatusIcon(session.status);
+                    return (
+                      <tr key={session.id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-3 px-4">
+                          <p className="text-sm text-gray-800">{session.date}</p>
+                          <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                            <Clock className="w-3 h-3" />{session.time}
+                          </p>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
+                              {session.student.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                            </div>
+                            <span className="text-sm font-medium">{session.student}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-sm text-gray-700 max-w-[180px] truncate" title={session.topic}>
+                          {session.topic}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1 w-fit ${getStatusColor(session.status)}`}>
+                            <StatusIcon className="w-3 h-3" />{session.status}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <button
+                            onClick={() => setSelectedSession(session)}
+                            className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {filteredSessions.length === 0 && (
+              <div className="text-center py-10 text-gray-400 text-sm">No se encontraron sesiones.</div>
+            )}
+          </div>
         </div>
 
-        {filteredSessions.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No se encontraron sesiones con estos criterios.</p>
+        {/* ── Formulario de registro (1/3) ──────────────────────────────────── */}
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
+          <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+            <div className="bg-green-50 p-2 rounded-lg">
+              <Plus className="w-4 h-4 text-green-600" />
+            </div>
+            <h3 className="font-semibold text-sm">Registrar sesión</h3>
           </div>
-        )}
+
+          <div className="p-5 flex-1 space-y-4">
+            {exito && (
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 rounded-lg px-3 py-2 text-sm">
+                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                ¡Sesión registrada correctamente!
+              </div>
+            )}
+
+            {/* Alumno */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Alumno</label>
+              <div className="relative">
+                <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <select
+                  value={formAlumno}
+                  onChange={e => setFormAlumno(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                >
+                  <option value="">Seleccionar alumno</option>
+                  {STUDENTS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+
+            {/* Fecha */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Fecha</label>
+              <div className="relative">
+                <Calendar className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="date"
+                  value={formFecha}
+                  onChange={e => setFormFecha(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Hora */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Hora</label>
+              <div className="relative">
+                <Clock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="time"
+                  value={formHora}
+                  onChange={e => setFormHora(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Tema */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Tema a tratar</label>
+              <input
+                type="text"
+                value={formTema}
+                onChange={e => setFormTema(e.target.value)}
+                placeholder="Ej: Cálculo diferencial..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+              />
+            </div>
+
+            {/* Lugar */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Lugar</label>
+              <input
+                type="text"
+                value={formLugar}
+                onChange={e => setFormLugar(e.target.value)}
+                placeholder="Ej: Aula 301, Virtual..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+              />
+            </div>
+
+            {/* Observaciones */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Observaciones</label>
+              <textarea
+                value={formObs}
+                onChange={e => setFormObs(e.target.value)}
+                placeholder="Notas de la sesión..."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm resize-none"
+              />
+            </div>
+
+            {formError && (
+              <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">{formError}</p>
+            )}
+
+            <button
+              onClick={handleRegistrar}
+              disabled={guardando}
+              className="w-full py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-60 flex items-center justify-center gap-2 font-medium text-sm"
+            >
+              {guardando
+                ? <><Loader2 className="w-4 h-4 animate-spin" /> Guardando...</>
+                : <><Plus className="w-4 h-4" /> Registrar sesión</>
+              }
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Session Detail Modal */}
+      {/* Modal Ver Detalle */}
       {selectedSession && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Modal Header */}
             <div className="p-6 border-b border-gray-200 flex justify-between items-start">
               <div>
                 <h3 className="font-semibold mb-2">{selectedSession.topic}</h3>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600">{selectedSession.date}</span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sm text-gray-600 flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" />{selectedSession.date}
+                  </span>
+                  <span className="text-sm text-gray-600 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />{selectedSession.time}
+                  </span>
                   <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(selectedSession.status)}`}>
                     {selectedSession.status}
                   </span>
                 </div>
               </div>
-              <button
-                onClick={() => setSelectedSession(null)}
-                className="text-gray-400 hover:text-gray-600 p-1"
-              >
+              <button onClick={() => setSelectedSession(null)} className="text-gray-400 hover:text-gray-600 p-1">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Student Info */}
               <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-900 mb-2">Estudiante</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
                     {selectedSession.student.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div>
@@ -323,7 +417,6 @@ export function CompletedSessionsView() {
                 </div>
               </div>
 
-              {/* Session Details */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -341,26 +434,23 @@ export function CompletedSessionsView() {
                 </div>
               </div>
 
-              {/* Observations */}
               <div>
                 <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  Observaciones
+                  <FileText className="w-4 h-4" /> Observaciones
                 </h4>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-700">{selectedSession.observations}</p>
+                  <p className="text-sm text-gray-700">{selectedSession.observations || 'Sin observaciones.'}</p>
                 </div>
               </div>
 
-              {/* Materials */}
               {selectedSession.materials.length > 0 && (
                 <div>
                   <h4 className="font-semibold mb-3">Material utilizado</h4>
                   <div className="space-y-2">
-                    {selectedSession.materials.map((material, index) => (
-                      <div key={index} className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg">
+                    {selectedSession.materials.map((m, i) => (
+                      <div key={i} className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg">
                         <FileText className="w-4 h-4 text-purple-600" />
-                        <span className="text-sm text-gray-700">{material}</span>
+                        <span className="text-sm text-gray-700">{m}</span>
                       </div>
                     ))}
                   </div>
@@ -368,7 +458,6 @@ export function CompletedSessionsView() {
               )}
             </div>
 
-            {/* Modal Footer */}
             <div className="p-6 border-t border-gray-200 flex justify-end">
               <button
                 onClick={() => setSelectedSession(null)}
